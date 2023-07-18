@@ -17,9 +17,30 @@ const bool verboseDebug = 1;
 
 class RefGraphSolver
 {
+  struct Node {
+    Node() {
+      packageName = "";
+      indeg = 0;
+      outdeg = 0;
+      neighbors = std::vector<Node*>();
+    }
+    Node(std::string name) {
+      packageName = name;
+      indeg = 0;
+      outdeg = 0;
+      neighbors = std::vector<Node*>();
+    }
+    std::string packageName;
+    std::vector<Node*> neighbors;
+    int indeg, outdeg;
+  };
 
   // map the TypeName -> PackageName
   static std::unordered_map<std::string, std::string> typeDefMap;
+  static std::unordered_map<std::string, Node*> nodesMap;
+  static std::vector<Node*> packageNodes;
+
+  
 
   static void LoadUnrealPackageDef() {
     // 加载虚幻引擎自带的一些类的定义，这些定义不是从游戏中dump的，是从引擎代码中抠出来的，需要单独加载
@@ -37,6 +58,12 @@ class RefGraphSolver
     for (auto& enums : package.Enums) {
       typeDefMap[enums.EnumName] = packageName;
     }
+
+    auto newNode = new Node(packageName);
+    nodesMap[packageName] = newNode;
+    packageNodes.push_back(newNode);
+
+
     if (verboseDebug) {
       printf("Loaded all packages defs!");
     }
