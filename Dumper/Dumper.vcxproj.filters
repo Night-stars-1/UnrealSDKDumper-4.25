@@ -41,6 +41,9 @@
     <ClCompile Include="dumper.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="RefGraphSolver.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -62,6 +65,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="dumper.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RefGraphSolver.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

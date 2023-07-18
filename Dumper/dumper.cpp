@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "utils.h"
 #include "wrappers.h"
+#include "RefGraphSolver.h"
 
 Dumper::~Dumper() {
   if (Image) VirtualFree(Image, 0, MEM_RELEASE);
@@ -156,7 +157,7 @@ STATUS Dumper::Dump() {
     }
 
     fmt::print("Packages: {}\n", packages.size());
-
+    std::vector<UE_UPackage> processedPackage;
     {
       auto path = Directory / "DUMP";
       fs::create_directories(path);
@@ -167,7 +168,6 @@ STATUS Dumper::Dump() {
 
       bool lock = true;
       if (PackageName) lock = false;
-
       for (UE_UPackage package : packages) {
         fmt::print("\rProcessing: {}/{}", i++, packages.size());
 
@@ -177,6 +177,7 @@ STATUS Dumper::Dump() {
         }
 
         package.Process();
+        processedPackage.push_back(package);
         if (package.Save(path, Spacing)) {
           saved++;
         } else {
@@ -190,6 +191,10 @@ STATUS Dumper::Dump() {
         unsaved.erase(unsaved.size() - 2);
         fmt::print("Unsaved empty packages: [ {} ]\n", unsaved);
       }
+
+      // Solve the ref relationship
+      RefGraphSolver::Process(processedPackage);
+
     }
   }
   return STATUS::SUCCESS;

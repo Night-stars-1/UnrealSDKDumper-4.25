@@ -117,6 +117,7 @@
     <ClCompile Include="generic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
+    <ClCompile Include="RefGraphSolver.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="wrappers.cpp" />
   </ItemGroup>
@@ -126,6 +127,7 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="generic.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="RefGraphSolver.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="wrappers.h" />
   </ItemGroup>

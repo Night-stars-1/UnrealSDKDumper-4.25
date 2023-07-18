@@ -5,6 +5,8 @@
 
 namespace fs = std::filesystem;
 
+class RefGraphSolver;
+
 // Wrapper for 'FILE*' that closes the file handle when it goes out of scope
 class File {
 private:
@@ -622,4 +624,6 @@ public:
   static void AddNamespaceDef(FILE* file, int type);
   bool Save(const fs::path& dir, bool spacing);
   UE_UObject GetObject() const;
+
+  friend RefGraphSolver;
 };

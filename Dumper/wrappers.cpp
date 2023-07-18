@@ -1092,11 +1092,17 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   }
   s.Inherited = 0;
   s.FullName = object.GetFullName();
-  s.CppName = "struct " + object.GetCppName();
+  if (object.IsA<UE_UClass>()) {
+    s.CppName = "class " + object.GetCppName();
+  }
+  else {
+    s.CppName = "struct " + object.GetCppName();
+  }
+  
 
   auto super = object.GetSuper();
   if (super) {
-    s.CppName += " : " + super.GetCppName();
+    s.CppName += " : public " + super.GetCppName();
     s.Inherited = super.GetSize();
   }
 
