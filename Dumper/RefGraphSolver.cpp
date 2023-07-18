@@ -6,7 +6,7 @@ std::vector<RefGraphSolver::Node*> RefGraphSolver::packageNodes;
 
 std::unordered_map<std::string, RefGraphSolver::Node*> RefGraphSolver::nodesMap;
 
-
+std::vector<std::string> RefGraphSolver::packageHeaderOrder;
 
 std::vector<std::string> RefGraphSolver::BasicTypes = {
 	"TArray",

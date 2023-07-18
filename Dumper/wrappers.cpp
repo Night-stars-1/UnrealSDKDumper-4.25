@@ -1320,6 +1320,24 @@ void UE_UPackage::AddNamespaceDef(FILE* file, int type) {
   }
 }
 
+void UE_UPackage::SavePackageHeader(bool hasClassHeader, bool hasStructHeader, FILE* file) {
+  fmt::print(file, "#pragma once\n\n");
+  std::string packageName = GetObject().GetName();
+  char chars[] = "/\\:*?\"<>|";
+  for (auto c : chars) {
+    auto pos = packageName.find(c);
+    if (pos != std::string::npos) {
+      packageName[pos] = '_';
+    }
+  }
+  if (hasClassHeader) {
+    fmt::print(file, "#include \"{}_classes.h\"\n", packageName);
+  }
+  if (hasStructHeader) {
+    fmt::print(file, "#include \"{}_struct.h\"\n", packageName);
+  }
+}
+
 bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
   if (!(Classes.size() || Structures.size() || Enums.size())) {
     return false;
@@ -1334,9 +1352,12 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
       packageName[pos] = '_';
     }
   }
+  bool hasClassHeader = false;
+  bool hasStructHeader = false;
 
   if (Classes.size()) {
     File file(dir / (packageName + "_classes.h"), "w");
+    hasClassHeader = true;
     if (!file) {
       return false;
     }
@@ -1353,6 +1374,7 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
 
   if (Structures.size() || Enums.size()) {
     File file(dir / (packageName + "_struct.h"), "w");
+    hasStructHeader = true;
     if (!file) {
       return false;
     }
@@ -1372,6 +1394,8 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
     UE_UPackage::AddNamespaceDef(file, 2);
     UE_UPackage::AddAlignDef(file, 2);
   }
+  File file(dir / (packageName + "_package.h"), "w");
+  UE_UPackage::SavePackageHeader(hasClassHeader, hasStructHeader, file);
 
   return true;
 }

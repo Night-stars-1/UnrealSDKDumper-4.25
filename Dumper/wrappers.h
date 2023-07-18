@@ -628,6 +628,7 @@ public:
   void Process();
   static void AddAlignDef(FILE* file, int type);
   static void AddNamespaceDef(FILE* file, int type);
+  void SavePackageHeader(bool hasClassHeader, bool hasStructHeader, FILE* file);
   bool Save(const fs::path& dir, bool spacing);
   UE_UObject GetObject() const;
 
