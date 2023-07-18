@@ -1224,10 +1224,10 @@ void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
 
   // I didn't see int16 yet, so I assume the engine generates only int32 and uint8:
   if (max > 256) {
-    type = " : int32"; // I assume if enum has a negative value it is int32
+    type = " : int32_t"; // I assume if enum has a negative value it is int32
   }
   else {
-    type = " : uint8";
+    type = " : uint8_t";
   }
 
   e.EnumName = object.GetName();
@@ -1330,11 +1330,11 @@ void UE_UPackage::SavePackageHeader(bool hasClassHeader, bool hasStructHeader, F
       packageName[pos] = '_';
     }
   }
-  if (hasClassHeader) {
-    fmt::print(file, "#include \"{}_classes.h\"\n", packageName);
-  }
   if (hasStructHeader) {
     fmt::print(file, "#include \"{}_struct.h\"\n", packageName);
+  }
+  if (hasClassHeader) {
+    fmt::print(file, "#include \"{}_classes.h\"\n", packageName);
   }
 }
 

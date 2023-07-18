@@ -100,6 +100,7 @@ void Dumper::GenerateSDKHeader(const fs::path& dir) {
   fmt::print(file, "\n // SDK headers \n\n");
   for (auto& packageName : RefGraphSolver::packageHeaderOrder) {
     if (packageName == "CppTypes") continue; // ignore
+
     char chars[] = "/\\:*?\"<>|";
     for (auto c : chars) {
       auto pos = packageName.find(c);
