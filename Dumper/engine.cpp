@@ -505,6 +505,7 @@ std::unordered_map<std::string, decltype(&engines[0])> games = {
   {"ProjectBoundarySteam-Win64-Shipping",&engines[0]},
   {"Prospect-Win64-Shipping",&engines[0]},
   {"SquadGame", &engines[13]},
+  {"Calabiyau-Win64-Shipping", &engines[0]}
 };
 
 STATUS EngineInit(std::string game, void* image) {
