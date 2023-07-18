@@ -5,6 +5,7 @@
 #include <set>
 #include <cassert>
 #include <fmt/core.h>
+#include <fstream>
 #include "wrappers.h"
 
 /*
@@ -28,6 +29,8 @@ class RefGraphSolver
       neighbors = std::vector<Node*>();
     }
     Node(std::string name) {
+      static int id = 0;
+      debug_id = ++id;
       packageName = name;
       indeg = 0;
       outdeg = 0;
@@ -36,6 +39,7 @@ class RefGraphSolver
     std::string packageName;
     std::vector<Node*> neighbors;
     int indeg, outdeg;
+    int debug_id;
   };
 
   // map the TypeName -> PackageName
@@ -162,6 +166,7 @@ class RefGraphSolver
   }
 
   static bool AddEdge(std::string packageReferer, std::string packageReferee) {
+    static std::ofstream output("relation.txt");
     // packageReferer -> packageReferee
     if (nodesMap.count(packageReferer) == 0) {
       printf("Could not found Referer class node \"%s\"!", packageReferer.c_str());
@@ -176,6 +181,7 @@ class RefGraphSolver
     pReferer->outdeg++;
     pReferee->indeg++;
     pReferer->neighbors.push_back(pReferee);
+    output << pReferer->packageName << " -> " << pReferee->packageName << std::endl;
     return true;
   }
 
@@ -184,11 +190,10 @@ class RefGraphSolver
     member.Type = "char";
     member.Name += fmt::format("[{:#0x}]", member.Size);
   }
-  static void FixUndefinedClassParam() {
-    
-  }
 
   static void BuildRefGraph(UE_UPackage& package) {
+    std::string packageName = package.GetObject().GetName();
+
 
     // 存储依赖的类型，去重
     std::set<std::string> refTypes;
@@ -324,6 +329,10 @@ class RefGraphSolver
       refPackages.insert(typeDefMap[refType]);
     }
 
+    // 链接关系
+    for(auto& targetPackage : refPackages) {
+      AddEdge(packageName, targetPackage);
+    }
   }
 public:
   static void Process(std::vector<UE_UPackage>& packages) {
