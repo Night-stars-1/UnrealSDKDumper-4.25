@@ -618,6 +618,7 @@ private:
 public:
   UE_UPackage(std::pair<uint8* const, std::vector<UE_UObject>>& package) : Package(&package){};
   void Process();
+  static void AddAlignDef(FILE* file, int type);
   bool Save(const fs::path& dir, bool spacing);
   UE_UObject GetObject() const;
 };

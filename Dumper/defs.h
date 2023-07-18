@@ -20,3 +20,5 @@ enum class STATUS {
   FILE_NOT_OPEN,
   ZERO_PACKAGES
 };
+
+#define GNameSpace "CG"
