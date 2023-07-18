@@ -1296,6 +1296,16 @@ void UE_UPackage::AddAlignDef(FILE* file, int type) {
   }
 }
 
+void UE_UPackage::AddNamespaceDef(FILE* file, int type) {
+
+  if (type == 1) {
+    fmt::print(file, "\nnamespace {} {{\n", GNameSpace);
+  }
+  else if (type == 2) {
+    fmt::print(file, "\n}}\n");
+  }
+}
+
 bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
   if (!(Classes.size() || Structures.size() || Enums.size())) {
     return false;
@@ -1317,11 +1327,13 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
       return false;
     }
     UE_UPackage::AddAlignDef(file, 1);
+    UE_UPackage::AddNamespaceDef(file, 1);
     if (spacing) {
       UE_UPackage::SaveStructSpacing(Classes, file);
     } else {
       UE_UPackage::SaveStruct(Classes, file);
     }
+    UE_UPackage::AddNamespaceDef(file, 2);
     UE_UPackage::AddAlignDef(file,2);
   }
 
@@ -1331,7 +1343,7 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
       return false;
     }
     UE_UPackage::AddAlignDef(file, 1);
-
+    UE_UPackage::AddNamespaceDef(file, 1);
     if (Enums.size()) {
       UE_UPackage::SaveEnum(Enums, file);
     }
@@ -1343,7 +1355,7 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
         UE_UPackage::SaveStruct(Structures, file);
       }
     }
-
+    UE_UPackage::AddNamespaceDef(file, 2);
     UE_UPackage::AddAlignDef(file, 2);
   }
 
