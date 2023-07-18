@@ -6,6 +6,7 @@
 #include <cassert>
 #include <fmt/core.h>
 #include <fstream>
+#include <queue>
 #include "wrappers.h"
 
 /*
@@ -15,6 +16,8 @@
 */
 
 const bool verboseDebug = 1;
+const bool ignoreTemplateRef = true; // 模板引用，且有class标志，编译器可以自动识别不用考虑顺序问题
+const bool ignoreFuncParamRef = true; // 函数参数引用，有class标志，编译器可自动识别不用考虑顺序问题
 
 #ifndef REFGRAPHSOLVER
 #define REFGRAPHSOLVER
@@ -151,6 +154,7 @@ class RefGraphSolver
 
   static void LoadPackageDef(UE_UPackage& package) {
     std::string packageName = package.GetObject().GetName();
+    if (packageName == "CoreUObject") return;
     for (auto& klass : package.Classes) {
       typeDefMap[klass.ClassName] = packageName;
     }
@@ -178,22 +182,34 @@ class RefGraphSolver
     }
     auto pReferer = nodesMap[packageReferer];
     auto pReferee = nodesMap[packageReferee];
-    pReferer->outdeg++;
-    pReferee->indeg++;
-    pReferer->neighbors.push_back(pReferee);
-    output << pReferer->packageName << " -> " << pReferee->packageName << std::endl;
+    pReferer->indeg++;
+    pReferee->outdeg++;
+    pReferee->neighbors.push_back(pReferer);
+    output << pReferer->packageName << " referes " << pReferee->packageName << std::endl;
     return true;
   }
 
   static void FixUndefinedClassMember(UE_UPackage::Member& member) {
     // 修复结构中一些没出现的结构，直接用char代替
-    member.Type = "char";
+    member.Type = "/*" + member.Type + "*/" + "char";
     member.Name += fmt::format("[{:#0x}]", member.Size);
+  }
+
+  static bool CanIgnoreRef(std::string typeName) {
+    // suppose that all template can be ignored.
+    // printf("Judge ignore: %s\n", typeName.c_str());
+    return true;
   }
 
   static void BuildRefGraph(UE_UPackage& package) {
     std::string packageName = package.GetObject().GetName();
-
+    if (packageName == "CoreUObject") {
+      // 处理特殊的类，不要使用dump数据
+      package.Classes.clear();
+      package.Enums.clear();
+      package.Structures.clear();
+      return;
+    }
 
     // 存储依赖的类型，去重
     std::set<std::string> refTypes;
@@ -224,6 +240,9 @@ class RefGraphSolver
               FixUndefinedClassMember(member);
               break;
             }
+          }
+          if (!should_fix && ignoreTemplateRef && CanIgnoreRef(purename)) {
+            continue;
           }
           if(!should_fix)
             for (auto& tname : genericTypes) {
@@ -258,6 +277,9 @@ class RefGraphSolver
               break;
             }
           }
+          if (!should_fix && ignoreTemplateRef && CanIgnoreRef(purename)) {
+            continue;
+          }
           if(!should_fix)
             for (auto& tname : genericTypes) {
               assert(tname != "");
@@ -290,6 +312,9 @@ class RefGraphSolver
                 goto end;
               }
             }
+            if (!should_fix && ignoreTemplateRef && CanIgnoreRef(purename)) {
+              continue;
+            }
             if(!should_fix)
               for (auto& tname : genericTypes) {
                 assert(tname != "");
@@ -304,6 +329,7 @@ class RefGraphSolver
               goto end;
             }
             else {
+              if (ignoreFuncParamRef) continue;
               refTypes.insert(purename);
             }
           }
@@ -326,14 +352,48 @@ class RefGraphSolver
         printf("[Warning] Cannot find type \"%s\" in any package!\n", refType.c_str());
         continue;
       }
+      if (packageName == "Engine" && typeDefMap[refType] == "UMG") {
+        printf("Engine Ref Landscape: %s\n", refType.c_str());
+      }
       refPackages.insert(typeDefMap[refType]);
     }
 
     // 链接关系
     for(auto& targetPackage : refPackages) {
+      if (packageName == targetPackage) continue;
       AddEdge(packageName, targetPackage);
     }
   }
+
+  static void TopoSort() {
+    std::queue<Node*> queue;
+    for (Node* node : packageNodes) {
+      if (node->indeg == 0) {
+        // 表示这个模块已经不依赖于其他模块了，可以输出
+        queue.push(node);
+      }
+    }
+    int cnt = 0;
+    while (!queue.empty()) {
+      Node* front = queue.front();
+      queue.pop();
+      cnt++;
+      printf("package[%d]: %s\n", cnt, front->packageName.c_str());
+      for (auto other : front->neighbors) {
+        other->indeg--;
+        if (other->indeg == 0) queue.push(other);
+      }
+    }
+    if (cnt != packageNodes.size()) {
+      printf("[Warning] Not all packages are included in the header for the reference problem.");
+      for (Node* node : packageNodes) {
+        if (node->indeg != 0) {
+          printf("\tPackageName: %s\n", node->packageName.c_str());
+        }
+      }
+    }
+  }
+
 public:
   static void Process(std::vector<UE_UPackage>& packages) {
     LoadUnrealPackageDef();
@@ -348,6 +408,8 @@ public:
     for (UE_UPackage& package : packages) {
       BuildRefGraph(package);
     }
+
+    TopoSort();
   }
 
 };
