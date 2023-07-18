@@ -1099,8 +1099,11 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     s.CppName = "struct " + object.GetCppName();
   }
   
+  s.ClassName = object.GetCppName();
+  s.SuperName = object.GetSuper().GetCppName();
 
   auto super = object.GetSuper();
+  
   if (super) {
     s.CppName += " : public " + super.GetCppName();
     s.Inherited = super.GetSize();
@@ -1223,6 +1226,7 @@ void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
     type = " : uint8";
   }
 
+  e.EnumName = object.GetName();
   e.CppName = "enum class " + object.GetName() + type;
 
   if (e.Members.size()) {

@@ -587,6 +587,8 @@ private:
   struct Struct {
     std::string FullName;
     std::string CppName;
+    std::string ClassName;
+    std::string SuperName;
     uint32 Inherited = 0;
     uint32 Size = 0;
     std::vector<Member> Members;
@@ -595,6 +597,7 @@ private:
   struct Enum {
     std::string FullName;
     std::string CppName;
+    std::string EnumName;
     std::vector<std::string> Members;
   };
 
