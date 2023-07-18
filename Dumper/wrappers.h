@@ -578,6 +578,8 @@ private:
     uint32 Size = 0;
   };
   struct Function {
+    std::vector<std::string> ParamTypes;
+    std::string RetType;
     std::string FullName;
     std::string CppName;
     std::string Params;

@@ -1049,10 +1049,12 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
     auto flags = prop->GetPropertyFlags();
     // if property has 'ReturnParm' flag
     if (flags & 0x400) {
+      out->RetType = prop->GetType().second;
       out->CppName = prop->GetType().second + " " + fn.GetName();
     }
     // if property has 'Parm' flag
     else if (flags & 0x80) {
+      out->ParamTypes.push_back(prop->GetType().second);
       if (prop->GetArrayDim() > 1) {
         out->Params += fmt::format("{}* {}, ", prop->GetType().second, prop->GetName());
       } else {
@@ -1080,6 +1082,7 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
   }
 
   if (out->CppName.size() == 0) {
+    out->RetType = "void";
     out->CppName = "void " + fn.GetName();
   }
 }

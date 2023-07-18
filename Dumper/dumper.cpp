@@ -168,6 +168,8 @@ STATUS Dumper::Dump() {
 
       bool lock = true;
       if (PackageName) lock = false;
+
+      // 先全部处理
       for (UE_UPackage package : packages) {
         fmt::print("\rProcessing: {}/{}", i++, packages.size());
 
@@ -178,6 +180,13 @@ STATUS Dumper::Dump() {
 
         package.Process();
         processedPackage.push_back(package);
+      }
+
+      // 再解决依赖关系问题
+      RefGraphSolver::Process(processedPackage);
+
+      // 再导出sdk
+      for (UE_UPackage package : processedPackage) {
         if (package.Save(path, Spacing)) {
           saved++;
         } else {
@@ -192,8 +201,7 @@ STATUS Dumper::Dump() {
         fmt::print("Unsaved empty packages: [ {} ]\n", unsaved);
       }
 
-      // Solve the ref relationship
-      RefGraphSolver::Process(processedPackage);
+      
 
     }
   }

@@ -6,6 +6,8 @@ std::vector<RefGraphSolver::Node*> RefGraphSolver::packageNodes;
 
 std::unordered_map<std::string, RefGraphSolver::Node*> RefGraphSolver::nodesMap;
 
+
+
 std::vector<std::string> RefGraphSolver::BasicTypes = {
 	"TArray",
 	"FString",
@@ -115,3 +117,21 @@ std::vector<std::string> RefGraphSolver::CoreUObject = {
 	"UMulticastDelegatePropertyWrapper",
 	"UMulticastInlineDelegatePropertyWrapper",
 };
+
+std::vector<std::string> RefGraphSolver::CppTypes = {
+	"void",
+	"float",
+	"char",
+	"bool",
+	"double",
+
+	"int8_t",
+	"int16_t",
+	"int32_t",
+	"int64_t",
+	"uint8_t",
+	"uint16_t",
+	"uint32_t",
+	"uint64_t",
+};
+
