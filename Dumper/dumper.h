@@ -24,5 +24,6 @@ public:
   }
   ~Dumper();
   STATUS Init(int argc, char *argv[]);
+  void GenerateSDKHeader(const fs::path& dir);
   STATUS Dump();
 };

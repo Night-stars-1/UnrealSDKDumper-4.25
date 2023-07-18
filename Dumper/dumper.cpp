@@ -80,6 +80,37 @@ STATUS Dumper::Init(int argc, char *argv[]) {
     return EngineInit(game.string(), Image);
   }
 }
+void Dumper::GenerateSDKHeader(const fs::path& dir) {
+  File file(dir / "SDK.h", "w");
+  const std::vector<std::string> stlLib = {
+    "set",
+    "string",
+    "vector",
+    "locale",
+    "unordered_set",
+    "unordered_map",
+    "iostream",
+    "sstream",
+    "cstdint",
+    "Windows.h",
+  };
+  for (auto& stlName : stlLib) {
+    fmt::print(file, "#include <{}>\n", stlName);
+  }
+  fmt::print(file, "\n // SDK headers \n\n");
+  for (auto& packageName : RefGraphSolver::packageHeaderOrder) {
+    if (packageName == "CppTypes") continue; // ignore
+    char chars[] = "/\\:*?\"<>|";
+    for (auto c : chars) {
+      auto pos = packageName.find(c);
+      if (pos != std::string::npos) {
+        packageName[pos] = '_';
+      }
+    }
+    fmt::print(file, "#include \"SDK/{}_package.h\"\n", packageName);
+  }
+
+}
 
 STATUS Dumper::Dump() {
   /*
@@ -159,7 +190,7 @@ STATUS Dumper::Dump() {
     fmt::print("Packages: {}\n", packages.size());
     std::vector<UE_UPackage> processedPackage;
     {
-      auto path = Directory / "DUMP";
+      auto path = Directory / "SDK";
       fs::create_directories(path);
 
       int i = 1;
@@ -192,6 +223,9 @@ STATUS Dumper::Dump() {
           unsaved += (package.GetObject().GetName() + ", ");
         };
       }
+
+      // 导出总的SDK头文件
+      Dumper::GenerateSDKHeader(Directory);
 
       fmt::print("\nSaved packages: {}\n", saved);
 
