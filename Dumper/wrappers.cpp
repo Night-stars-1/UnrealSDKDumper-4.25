@@ -1047,6 +1047,7 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
 
   auto generateParam = [&](IProperty *prop) {
     auto flags = prop->GetPropertyFlags();
+    out->FuncName = fn.GetName();
     // if property has 'ReturnParm' flag
     if (flags & 0x400) {
       out->RetType = prop->GetType().second;

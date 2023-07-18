@@ -177,7 +177,6 @@ STATUS Dumper::Dump() {
           package.FindPointers = true;
           lock = true;
         }
-
         package.Process();
         processedPackage.push_back(package);
       }
@@ -186,7 +185,7 @@ STATUS Dumper::Dump() {
       RefGraphSolver::Process(processedPackage);
 
       // ÔÙµ¼³ösdk
-      for (UE_UPackage package : processedPackage) {
+      for (UE_UPackage& package : processedPackage) {
         if (package.Save(path, Spacing)) {
           saved++;
         } else {

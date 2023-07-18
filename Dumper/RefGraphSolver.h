@@ -3,8 +3,9 @@
 #include <vector>
 #include <string>
 #include <set>
-#include "wrappers.h"
 #include <cassert>
+#include <fmt/core.h>
+#include "wrappers.h"
 
 /*
 * Author: BobH
@@ -178,6 +179,15 @@ class RefGraphSolver
     return true;
   }
 
+  static void FixUndefinedClassMember(UE_UPackage::Member& member) {
+    // 修复结构中一些没出现的结构，直接用char代替
+    member.Type = "char";
+    member.Name += fmt::format("[{:#0x}]", member.Size);
+  }
+  static void FixUndefinedClassParam() {
+    
+  }
+
   static void BuildRefGraph(UE_UPackage& package) {
 
     // 存储依赖的类型，去重
@@ -186,7 +196,7 @@ class RefGraphSolver
     // 存储依赖的package，去重
     std::set <std::string> refPackages;
 
-    auto processStruct = [&refTypes, &refPackages](UE_UPackage::Struct klass) {
+    auto processStruct = [&refTypes, &refPackages](UE_UPackage::Struct& klass) {
       // 处理继承依赖
       auto& superName = klass.SuperName;
       if (superName == "FNone" && verboseDebug) {
@@ -201,32 +211,63 @@ class RefGraphSolver
         if (purename.find("<") != std::string::npos) {
           // generic type
           auto genericTypes = GetGenericTypes(purename);
+          bool should_fix = false;
           for (auto& tname : genericTypes) {
             assert(tname != "");
-            refTypes.insert(tname);
+            if (typeDefMap.count(tname) == 0) {
+              should_fix = true;
+              FixUndefinedClassMember(member);
+              break;
+            }
           }
+          if(!should_fix)
+            for (auto& tname : genericTypes) {
+              assert(tname != "");
+              refTypes.insert(tname);
+            }
         }
         else {
           assert(purename != "");
-          refTypes.insert(purename);
+          if (typeDefMap.count(purename) == 0)
+            FixUndefinedClassMember(member);
+          else
+            refTypes.insert(purename);
         }
       }
 
       // 处理函数类型依赖
       for (auto& function : klass.Functions) {
         // 处理返回值
+        bool deleteFunction = false; // 如果这个函数返回值有问题，那就设置成void了
         auto purename = GetPureTypeName(function.RetType);
         if (purename.find("<") != std::string::npos) {
           // generic type
           auto genericTypes = GetGenericTypes(purename);
+          bool should_fix = false;
           for (auto& tname : genericTypes) {
             assert(tname != "");
-            refTypes.insert(tname);
+            if (typeDefMap.count(tname) == 0) {
+              should_fix = true;
+              function.RetType = "void";
+              function.CppName = "void " + function.FuncName;
+              break;
+            }
           }
+          if(!should_fix)
+            for (auto& tname : genericTypes) {
+              assert(tname != "");
+              refTypes.insert(tname);
+            }
         }
         else {
           assert(purename != "");
-          refTypes.insert(purename);
+          if (typeDefMap.count(purename) == 0) {
+            function.RetType = "void";
+            function.CppName = "void " + function.FuncName;
+          }
+          else {
+            refTypes.insert(purename);
+          }
         }
         // 处理参数
         for (auto paramtype : function.ParamTypes) {
@@ -234,16 +275,35 @@ class RefGraphSolver
           if (purename.find("<") != std::string::npos) {
             // generic type
             auto genericTypes = GetGenericTypes(purename);
+            bool should_fix = false;
             for (auto& tname : genericTypes) {
               assert(tname != "");
-              refTypes.insert(tname);
+              if (typeDefMap.count(tname) == 0) {
+                should_fix = true;
+                function.Params = "/*" + function.Params + "*/";
+                function.ParamTypes.clear();
+                goto end;
+              }
             }
+            if(!should_fix)
+              for (auto& tname : genericTypes) {
+                assert(tname != "");
+                refTypes.insert(tname);
+              }
           }
           else {
             assert(purename != "");
-            refTypes.insert(purename);
+            if (typeDefMap.count(purename) == 0) {
+              function.Params = "/*" + function.Params + "*/";
+              function.ParamTypes.clear();
+              goto end;
+            }
+            else {
+              refTypes.insert(purename);
+            }
           }
         }
+        end:;
       }
     };
 
@@ -273,7 +333,7 @@ public:
     }
 
     if (verboseDebug) {
-      printf("Loaded all packages defs! \n");
+      printf("\nLoaded all packages defs! \n");
     }
 
     for (UE_UPackage& package : packages) {

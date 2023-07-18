@@ -579,6 +579,7 @@ private:
   };
   struct Function {
     std::vector<std::string> ParamTypes;
+    std::string FuncName;
     std::string RetType;
     std::string FullName;
     std::string CppName;
