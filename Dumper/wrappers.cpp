@@ -1228,7 +1228,10 @@ void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
       str = str.substr(pos + 1);
     }
 
-    auto value = Read<int64>(pair + nameSize);
+    //auto value = Read<int64>(pair + nameSize);
+    // this read some wrong value, so I force it to be ordered... May be wrong?
+    auto value = i;
+
     if ((uint64)value > max) max = value;
 
     UE_UPackage::FixKeywordConflict(str);
