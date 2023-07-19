@@ -1051,19 +1051,20 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
     // if property has 'ReturnParm' flag
     if (flags & 0x400) {
       out->RetType = prop->GetType().second;
-      out->CppName = prop->GetType().second + " " + fn.GetName();
+      
+      out->CppName = prop->GetType().second + " " + GetValidClassName(fn.GetName());
     }
     // if property has 'Parm' flag
     else if (flags & 0x80) {
       out->ParamTypes.push_back(prop->GetType().second);
       if (prop->GetArrayDim() > 1) {
-        out->Params += fmt::format("{}* {}, ", prop->GetType().second, prop->GetName());
+        out->Params += fmt::format("{}* {}, ", prop->GetType().second, GetValidClassName( prop->GetName()));
       } else {
         if (flags & 0x100) {
-          out->Params += fmt::format("{}& {}, ", prop->GetType().second, prop->GetName());
+          out->Params += fmt::format("{}& {}, ", prop->GetType().second, GetValidClassName(prop->GetName()));
         }
         else {
-          out->Params += fmt::format("{} {}, ", prop->GetType().second, prop->GetName());
+          out->Params += fmt::format("{} {}, ", prop->GetType().second, GetValidClassName(prop->GetName()));
         }
        
       }
@@ -1084,8 +1085,20 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
 
   if (out->CppName.size() == 0) {
     out->RetType = "void";
-    out->CppName = "void " + fn.GetName();
+    out->CppName = "void " + GetValidClassName(fn.GetName());
   }
+}
+
+std::string UE_UPackage::GetValidClassName(std::string str) {
+  char chars[] = " /\\:*?\"<>|+()";
+  for (auto c : chars) {
+    size_t pos = str.find(c);
+    while (pos != std::string::npos) {
+      str[pos] = '_';
+      pos = str.find(c);
+    }
+  }
+  return str;
 }
 
 void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers) {
@@ -1097,10 +1110,10 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   s.Inherited = 0;
   s.FullName = object.GetFullName();
   if (object.IsA<UE_UClass>()) {
-    s.CppName = "class " + object.GetCppName();
+    s.CppName = "class " + GetValidClassName(object.GetCppName());
   }
   else {
-    s.CppName = "struct " + object.GetCppName();
+    s.CppName = "struct " + GetValidClassName(object.GetCppName());
   }
   
   s.ClassName = object.GetCppName();
@@ -1126,8 +1139,16 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
 
     auto type = prop->GetType();
     m->Type = type.second;
+    
     m->Name = prop->GetName();
+
+    FixKeywordConflict(m->Name);
+    m->Name = GetValidClassName(m->Name);
     m->Offset = prop->GetOffset();
+
+    if (m->Name[0] >= '0' && m->Name[0] <= '9') {
+      m->Name = "_" + m->Name;
+    }
 
     if (memberNameCntMp.count(m->Name) > 0) {
       memberNameCntMp[m->Name]++;
@@ -1203,8 +1224,110 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
 }
 
 void UE_UPackage::FixKeywordConflict(std::string& tocheck) {
-  if (tocheck == "IGNORE") {
-    tocheck += "_1";
+  const std::vector<std::string> cppKeyword = {
+    "alignas",
+    "alignof",
+    "and",
+    "and_eq",
+    "asm",
+    "auto",
+    "bitand",
+    "bitor",
+    "bool",
+    "break",
+    "case",
+    "catch",
+    "char",
+    "char16_t",
+    "char32_t",
+    "class",
+    "compl",
+    "concept",
+    "const",
+    "constexpr",
+    "const_cast",
+    "continue",
+    "decltype",
+    "default",
+    "delete",
+    "do",
+    "double",
+    "dynamic_cast",
+    "else",
+    "enum",
+    "explicit",
+    "export",
+    "extern",
+    "false",
+    "float",
+    "for",
+    "friend",
+    "goto",
+    "if",
+    "inline",
+    "int",
+    "long",
+    "mutable",
+    "namespace",
+    "new",
+    "noexcept",
+    "not",
+    "not_eq",
+    "nullptr",
+    "operator",
+    "or",
+    "or_eq",
+    "private",
+    "protected",
+    "public",
+    "register",
+    "reinterpret_cast",
+    "requires",
+    "return",
+    "short",
+    "signed",
+    "sizeof",
+    "static",
+    "static_assert",
+    "static_cast",
+    "struct",
+    "switch",
+    "template",
+    "this",
+    "thread_local",
+    "throw",
+    "true",
+    "try",
+    "typedef",
+    "typeid",
+    "typename",
+    "union",
+    "unsigned",
+    "using",
+    "virtual",
+    "void",
+    "volatile",
+    "wchar_t",
+    "while",
+    "xor",
+    "xor_eq"
+  };
+  const std::vector<std::string> includeKeyword = {
+    "IGNORE",
+    "ABSOLUTE",
+    "RELATIVE",
+  };
+  for (auto& keyword : cppKeyword) {
+    if (tocheck == keyword) {
+      tocheck += "_1";
+      return;
+    }
+  }
+  for (auto& keyword : includeKeyword) {
+    if (tocheck == keyword) {
+      tocheck += "_1";
+      return;
+    }
   }
 }
 
@@ -1343,7 +1466,7 @@ void UE_UPackage::AddNamespaceDef(FILE* file, int type) {
 void UE_UPackage::SavePackageHeader(bool hasClassHeader, bool hasStructHeader, FILE* file) {
   fmt::print(file, "#pragma once\n\n");
   std::string packageName = GetObject().GetName();
-  char chars[] = "/\\:*?\"<>|";
+  char chars[] = "/\\:*?\"<>|+";
   for (auto c : chars) {
     auto pos = packageName.find(c);
     if (pos != std::string::npos) {
@@ -1365,7 +1488,7 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
 
   std::string packageName = GetObject().GetName();
 
-  char chars[] = "/\\:*?\"<>|";
+  char chars[] = "/\\:*?\"<>|+";
   for (auto c : chars) {
     auto pos = packageName.find(c);
     if (pos != std::string::npos) {

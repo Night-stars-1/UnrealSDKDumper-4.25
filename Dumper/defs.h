@@ -21,4 +21,4 @@ enum class STATUS {
   ZERO_PACKAGES
 };
 
-#define GNameSpace "CG"
+#define GNameSpace "Dumper"

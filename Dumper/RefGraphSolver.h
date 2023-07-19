@@ -166,9 +166,7 @@ class RefGraphSolver
     for (auto& enums : package.Enums) {
       typeDefMap[enums.EnumName] = packageName;
     }
-
-    PushNode(packageName);
-
+    if(package.Classes.size() || package.Structures.size() || package.Enums.size()) PushNode(packageName);
   }
 
   static bool AddEdge(std::string packageReferer, std::string packageReferee) {

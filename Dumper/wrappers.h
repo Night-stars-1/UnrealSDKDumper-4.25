@@ -618,6 +618,7 @@ private:
   static void GeneratePadding(std::vector<Member>& members, uint32 offset, uint32 size);
   static void FillPadding(UE_UStruct object, std::vector<Member>& members, uint32& offset, uint8& bitOffset, uint32 end, bool findPointers);
   static void GenerateFunction(UE_UFunction fn, Function* out);
+  static std::string GetValidClassName(std::string str);
   static void GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers);
   static void FixKeywordConflict(std::string& tocheck);
   static void GenerateEnum(UE_UEnum object, std::vector<Enum>& arr);

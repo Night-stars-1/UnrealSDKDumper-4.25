@@ -111,7 +111,7 @@ void Dumper::GenerateSDKHeader(const fs::path& dir) {
   for (auto& packageName : RefGraphSolver::packageHeaderOrder) {
     if (packageName == "CppTypes") continue; // ignore
 
-    char chars[] = "/\\:*?\"<>|";
+    char chars[] = "/\\:*?\"<>|+";
     for (auto c : chars) {
       auto pos = packageName.find(c);
       if (pos != std::string::npos) {
