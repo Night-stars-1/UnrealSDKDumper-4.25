@@ -1101,6 +1101,9 @@ std::string UE_UPackage::GetValidClassName(std::string str) {
   return str;
 }
 
+// To solve the redefine of the same class name
+std::unordered_map<std::string, int> typeDefCnt;
+
 void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers) {
   Struct s;
   s.Size = object.GetSize();
@@ -1109,14 +1112,21 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   }
   s.Inherited = 0;
   s.FullName = object.GetFullName();
-  if (object.IsA<UE_UClass>()) {
-    s.CppName = "class " + GetValidClassName(object.GetCppName());
+  s.ClassName = object.GetCppName();
+  if (typeDefCnt.count(s.ClassName)) {
+    s.ClassName += fmt::format("_def{}", ++typeDefCnt[s.ClassName]);
   }
   else {
-    s.CppName = "struct " + GetValidClassName(object.GetCppName());
+    typeDefCnt[s.ClassName] = 1;
+  }
+
+  if (object.IsA<UE_UClass>()) {
+    s.CppName = "class " + GetValidClassName(s.ClassName);
+  }
+  else {
+    s.CppName = "struct " + GetValidClassName(s.ClassName);
   }
   
-  s.ClassName = object.GetCppName();
   s.SuperName = object.GetSuper().GetCppName();
 
   auto super = object.GetSuper();
