@@ -1193,6 +1193,12 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   arr.push_back(s);
 }
 
+void UE_UPackage::FixKeywordConflict(std::string& tocheck) {
+  if (tocheck == "IGNORE") {
+    tocheck += "_1";
+  }
+}
+
 void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
   Enum e;
   e.FullName = object.GetFullName();
@@ -1215,6 +1221,8 @@ void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
 
     auto value = Read<int64>(pair + nameSize);
     if ((uint64)value > max) max = value;
+
+    UE_UPackage::FixKeywordConflict(str);
 
     str.append(" = ").append(fmt::format("{}", value));
     e.Members.push_back(str);

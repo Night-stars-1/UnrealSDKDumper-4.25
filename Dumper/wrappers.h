@@ -619,6 +619,7 @@ private:
   static void FillPadding(UE_UStruct object, std::vector<Member>& members, uint32& offset, uint8& bitOffset, uint32 end, bool findPointers);
   static void GenerateFunction(UE_UFunction fn, Function* out);
   static void GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers);
+  static void FixKeywordConflict(std::string& tocheck);
   static void GenerateEnum(UE_UEnum object, std::vector<Enum>& arr);
   static void SaveStruct(std::vector<Struct> &arr, FILE *file);
   static void SaveStructSpacing(std::vector<Struct> &arr, FILE* file); // save struct with spacing to members applied
