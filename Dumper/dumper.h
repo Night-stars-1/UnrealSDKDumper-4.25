@@ -18,6 +18,7 @@ private:
   Dumper(){};
 
 public:
+  std::string gameName;
   static Dumper* GetInstance() {
     static Dumper dumper;
     return &dumper;

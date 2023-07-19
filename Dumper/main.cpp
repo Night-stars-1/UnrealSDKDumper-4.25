@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
     uint64 end;
     uint64 time;
 
+
     auto dumper = Dumper::GetInstance();
 
     start = GetTime();

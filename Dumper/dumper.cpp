@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "wrappers.h"
 #include "RefGraphSolver.h"
+#include "EngineHeaderExport.h"
 
 Dumper::~Dumper() {
   if (Image) VirtualFree(Image, 0, MEM_RELEASE);
@@ -66,6 +67,7 @@ STATUS Dumper::Init(int argc, char *argv[]) {
     auto root = fs::path(argv[0]);
     root.remove_filename();
     auto game = processName.stem();
+    gameName = game.string();
     Directory = root / "Games" / game;
     fs::create_directories(Directory);
 
@@ -201,6 +203,9 @@ STATUS Dumper::Dump() {
     {
       auto path = Directory / "SDK";
       fs::create_directories(path);
+
+      // 输出引擎自带的头
+      EngineHeaderExport::Process(path);
 
       int i = 1;
       int saved = 0;

@@ -114,6 +114,7 @@
     <ClCompile Include="..\include\fmt\format.cc" />
     <ClCompile Include="dumper.cpp" />
     <ClCompile Include="engine.cpp" />
+    <ClCompile Include="EngineHeaderExport.cpp" />
     <ClCompile Include="generic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
@@ -125,11 +126,16 @@
     <ClInclude Include="defs.h" />
     <ClInclude Include="dumper.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="EngineHeaderExport.h" />
     <ClInclude Include="generic.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="RefGraphSolver.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="wrappers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="engine_code.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

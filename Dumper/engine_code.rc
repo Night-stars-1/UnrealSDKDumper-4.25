@@ -1,0 +1,15 @@
+#include "resource.h"
+
+FOR_TEST_FILE TEXTFILE "engine_code\\fortest.txt"
+
+BASICTYPES_PACKAGE TEXTFILE "engine_code\\BasicTypes_Package.h"
+
+BASICTYPES_CLASSES TEXTFILE "engine_code\\BasicTypes_Classes.h"
+
+BASICTYPES_STRUCT TEXTFILE "engine_code\\BasicTypes_Structs.h"
+
+COREUOBJECT_PACKAGE TEXTFILE "engine_code\\CoreUObject_Package.h"
+
+COREUOBJECT_CLASSES TEXTFILE "engine_code\\CoreUObject_Classes.h"
+
+COREUOBJECT_STRUCT TEXTFILE "engine_code\\CoreUObject_Structs.h"
