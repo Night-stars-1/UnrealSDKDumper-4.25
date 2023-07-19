@@ -1115,8 +1115,9 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
 
   uint32 offset = s.Inherited;
   uint8 bitOffset = 0;
-
+  std::unordered_map<std::string, int> memberNameCntMp;
   auto generateMember = [&](IProperty *prop, Member *m) {
+    // if (object.GetCppName() == "FPropertyCollector") _CrtDbgBreak();
     auto arrDim = prop->GetArrayDim();
     m->Size = prop->GetSize() * arrDim;
     if (m->Size == 0) {
@@ -1127,6 +1128,14 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     m->Type = type.second;
     m->Name = prop->GetName();
     m->Offset = prop->GetOffset();
+
+    if (memberNameCntMp.count(m->Name) > 0) {
+      memberNameCntMp[m->Name]++;
+      m->Name += fmt::format("_{}", memberNameCntMp[m->Name]);
+    }
+    else {
+      memberNameCntMp[m->Name] = 1;
+    }
 
     if (m->Offset > offset) {
       UE_UPackage::FillPadding(object, s.Members, offset, bitOffset, m->Offset, findPointers);
