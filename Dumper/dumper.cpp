@@ -94,9 +94,17 @@ void Dumper::GenerateSDKHeader(const fs::path& dir) {
     "cstdint",
     "Windows.h",
   };
+  const std::vector<int> ignoreWarningCode = {
+    4099,
+  };
   for (auto& stlName : stlLib) {
     fmt::print(file, "#include <{}>\n", stlName);
   }
+
+  for (auto& code : ignoreWarningCode) {
+    fmt::print(file, "#pragma warning(disable: {})\n", code);
+  }
+
   fmt::print(file, "\n // SDK headers \n\n");
   for (auto& packageName : RefGraphSolver::packageHeaderOrder) {
     if (packageName == "CppTypes") continue; // ignore
