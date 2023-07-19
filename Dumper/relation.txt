@@ -1535,7 +1535,7 @@ BP_Sequence_Crystal_coa01_Stand referes Niagara
 BP_Cha01_Eric_Tutorial referes AnimationBudgetAllocator
 BP_Cha01_Eric_Tutorial referes BP_InvisibleWall_SceneObstacleBase
 BP_Cha01_Eric_Tutorial referes Engine
-shot08 referes LevelSequence
+shot08_2 referes LevelSequence
 BP_GA_Eric_Roll_Back referes Seria
 BP_Sequence_Player_Base referes Seria
 BP_Sequence_Eric referes AnimationBudgetAllocator
@@ -1599,8 +1599,8 @@ BP_TargetType_M57_Skill01_3 referes Seria
 BP_GA_Ring_Crouch_Out referes Seria
 BP_GA_M57_Attack02 referes Seria
 BP_GA_M57_Attack01 referes Seria
-BP_M59_Ancient_Watcher_Tutorial referes BP_AirMonster_Base
-BP_M59_Ancient_Watcher_Tutorial referes Seria
+BP_M59_Ancient_Watcher_Tutorial_2 referes BP_AirMonster_Base
+BP_M59_Ancient_Watcher_Tutorial_2 referes Seria
 BP_Clocktower_Lamp03_04 referes Engine
 WBP_HUD_Background referes BasicTypes
 WBP_HUD_Background referes Seria

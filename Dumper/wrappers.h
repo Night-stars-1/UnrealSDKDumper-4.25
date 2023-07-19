@@ -610,6 +610,7 @@ private:
   std::vector<Struct> Structures;
   std::vector<Enum> Enums;
 public:
+  std::string packageName;
   bool FindPointers = false;
 
 

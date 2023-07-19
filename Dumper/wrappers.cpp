@@ -1465,7 +1465,7 @@ void UE_UPackage::AddNamespaceDef(FILE* file, int type) {
 
 void UE_UPackage::SavePackageHeader(bool hasClassHeader, bool hasStructHeader, FILE* file) {
   fmt::print(file, "#pragma once\n\n");
-  std::string packageName = GetObject().GetName();
+  std::string packageName = this->packageName;
   char chars[] = "/\\:*?\"<>|+";
   for (auto c : chars) {
     auto pos = packageName.find(c);
@@ -1486,7 +1486,7 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
     return false;
   }
 
-  std::string packageName = GetObject().GetName();
+  std::string packageName = this->packageName;
 
   char chars[] = "/\\:*?\"<>|+";
   for (auto c : chars) {

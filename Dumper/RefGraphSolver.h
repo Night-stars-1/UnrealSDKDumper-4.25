@@ -155,7 +155,7 @@ class RefGraphSolver
   }
 
   static void LoadPackageDef(UE_UPackage& package) {
-    std::string packageName = package.GetObject().GetName();
+    std::string packageName = package.packageName;
     if (packageName == "CoreUObject") return;
     for (auto& klass : package.Classes) {
       typeDefMap[klass.ClassName] = packageName;
@@ -202,7 +202,7 @@ class RefGraphSolver
   }
 
   static void BuildRefGraph(UE_UPackage& package) {
-    std::string packageName = package.GetObject().GetName();
+    std::string packageName = package.packageName;
     if (packageName == "CoreUObject") {
       // 处理特殊的类，不要使用dump数据
       package.Classes.clear();
@@ -363,7 +363,7 @@ class RefGraphSolver
   }
 
   static void FixPackageTypeOrder(UE_UPackage& package) {
-    std::string packageName = package.GetObject().GetName();
+    std::string packageName = package.packageName;
     if (packageName == "CoreUObject") {
       // 处理特殊的类，不要使用dump数据
       package.Classes.clear();
@@ -574,8 +574,15 @@ class RefGraphSolver
 public:
   static void Process(std::vector<UE_UPackage>& packages) {
     LoadUnrealPackageDef();
-
+    std::unordered_map<std::string, int> packageNameMp;
     for (UE_UPackage& package : packages) {
+      package.packageName = package.GetObject().GetName();
+      if (packageNameMp.count(package.packageName) > 0) {
+        package.packageName += fmt::format("_{}", ++packageNameMp[package.packageName]);
+      }
+      else {
+        packageNameMp[package.packageName] = 1;
+      }
       LoadPackageDef(package);
     }
 
