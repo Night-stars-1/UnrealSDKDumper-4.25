@@ -19,6 +19,8 @@ const bool verboseDebug = 1;
 const bool ignoreTemplateRef = true; // 模板引用，且有class标志，编译器可以自动识别不用考虑顺序问题
 const bool ignoreFuncParamRef = true; // 函数参数引用，有class标志，编译器可自动识别不用考虑顺序问题
 
+#define DEBUG
+
 #ifndef REFGRAPHSOLVER
 #define REFGRAPHSOLVER
 
@@ -352,9 +354,6 @@ class RefGraphSolver
         printf("[Warning] Cannot find type \"%s\" in any package!\n", refType.c_str());
         continue;
       }
-      if (packageName == "Engine" && typeDefMap[refType] == "UMG") {
-        printf("Engine Ref Landscape: %s\n", refType.c_str());
-      }
       refPackages.insert(typeDefMap[refType]);
     }
 
@@ -363,6 +362,183 @@ class RefGraphSolver
       if (packageName == targetPackage) continue;
       AddEdge(packageName, targetPackage);
     }
+  }
+
+  static void FixPackageTypeOrder(UE_UPackage& package) {
+    std::string packageName = package.GetObject().GetName();
+    if (packageName == "CoreUObject") {
+      // 处理特殊的类，不要使用dump数据
+      package.Classes.clear();
+      package.Enums.clear();
+      package.Structures.clear();
+      return;
+    }
+
+    /// DEBUG!!!
+    if (packageName != "ALSV4_CPP") return;
+
+    // inclassTypeName -> Node*
+    std::unordered_map<std::string, Node*> classMp, structMp;
+    std::unordered_map<std::string, int> typeMap; // 区分到底是struct还是class
+
+    auto isTypeInCurrentPackage = [&packageName](std::string typeName) {
+      if (typeDefMap.count(typeName) == 0) return false;
+      return typeDefMap[typeName] == packageName;
+    };
+
+    auto insertEdge = [&typeMap](std::string referer, std::string referee, std::unordered_map<std::string, Node*>& nodeMp) {
+      if (typeMap[referer] != typeMap[referee]) return;  // class -> struct, struct -> class 没必要处理
+      if (referer == referee) return; // 消除自环
+      Node* per, * pee;
+      if (nodeMp.count(referer)) {
+        per = nodeMp[referer];
+      }
+      else {
+        per = new Node(referer);
+        nodeMp[referer] = per;
+      }
+      if (nodeMp.count(referee)) {
+        pee = nodeMp[referee];
+      }
+      else {
+        pee = new Node(referee);
+        nodeMp[referee] = pee;
+      }
+      pee->outdeg++;
+      per->indeg++;
+      pee->neighbors.push_back(per);
+      if (verboseDebug) printf("SelfAddEdge %s -> %s\n", referer.c_str(), referee.c_str());
+    };
+
+    auto processStruct = [&isTypeInCurrentPackage, &insertEdge](UE_UPackage::Struct& klass, std::unordered_map<std::string, Node*>& mp) {
+      if (klass.ClassName == "FALSAnimRotateInPlace") {
+        // _CrtDbgBreak();
+      }
+      // 处理继承依赖
+      auto& superName = klass.SuperName;
+      assert(superName.find("<") == std::string::npos);  // Should not be possible?
+      if (superName != "FNone" && superName != "" && isTypeInCurrentPackage(superName)) {
+        insertEdge(klass.ClassName, superName, mp);
+      }
+
+      // 处理成员类型依赖
+      for (auto& member : klass.Members) {
+        if (member.Type.find("*") != std::string::npos) {
+          // class pointre, can be ignored
+          continue;
+        }
+        auto purename = GetPureTypeName(member.Type);
+        if (purename.find("<") != std::string::npos) {
+          // generic type
+          auto genericTypes = GetGenericTypes(purename);
+          if (ignoreTemplateRef && CanIgnoreRef(purename)) {
+            continue;
+          }
+          for (auto& tname : genericTypes) {
+            assert(tname != "");
+            if (isTypeInCurrentPackage(tname)) insertEdge(klass.ClassName, tname, mp);
+          }
+        }
+        else {
+          assert(purename != "");
+          if (isTypeInCurrentPackage(purename)) insertEdge(klass.ClassName, purename, mp);
+        }
+      }
+
+      // 处理函数类型依赖
+      for (auto& function : klass.Functions) {
+        // 处理返回值
+        auto purename = GetPureTypeName(function.RetType);
+        if (purename.find("<") != std::string::npos) {
+          // generic type
+          auto genericTypes = GetGenericTypes(purename);
+          if (ignoreTemplateRef && CanIgnoreRef(purename)) {
+            continue;
+          }
+          for (auto& tname : genericTypes) {
+            assert(tname != "");
+            if (isTypeInCurrentPackage(tname)) insertEdge(klass.ClassName, tname, mp);
+          }
+        }
+        else {
+          assert(purename != "");
+          if (isTypeInCurrentPackage(purename)) insertEdge(klass.ClassName, purename, mp);
+        }
+        // 处理参数
+        for (auto paramtype : function.ParamTypes) {
+          auto purename = GetPureTypeName(paramtype);
+          if (purename.find("<") != std::string::npos) {
+            // generic type
+            auto genericTypes = GetGenericTypes(purename);
+            if (ignoreTemplateRef && CanIgnoreRef(purename)) {
+              continue;
+            }
+            for (auto& tname : genericTypes) {
+              assert(tname != "");
+              if (isTypeInCurrentPackage(tname)) insertEdge(klass.ClassName, tname, mp);
+            }
+          }
+          else {
+            assert(purename != "");
+            if (ignoreFuncParamRef) continue;
+            if (isTypeInCurrentPackage(purename)) insertEdge(klass.ClassName, purename, mp);
+          }
+        }
+      }
+    };
+
+    auto inclassTopo = [](std::vector<UE_UPackage::Struct>& classes, std::unordered_map<std::string, Node*>& mp) {
+      std::vector<UE_UPackage::Struct> newOrder;
+      std::unordered_map<std::string, UE_UPackage::Struct> mp2;
+      std::unordered_map<std::string, bool> debug;
+      std::queue<Node*> queue;
+      for (auto& klass : classes) {
+        mp2[klass.ClassName] = klass;
+        // 将没有约束关系的类先放进去
+        if (mp.count(klass.ClassName) == 0) {
+          newOrder.push_back(klass);
+          debug[klass.ClassName] = true;
+        }
+        else {
+          if (mp[klass.ClassName]->indeg == 0) {
+            queue.push(mp[klass.ClassName]);
+          }
+        }
+      }
+      while (!queue.empty()) {
+        Node* front = queue.front();
+        debug[front->packageName] = true;
+        newOrder.push_back(mp2[front->packageName]);
+        queue.pop();
+        for (auto other : front->neighbors) {
+          other->indeg--;
+          if (other->indeg == 0) queue.push(other);
+        }
+      }
+      for (auto& ori : classes) {
+        if (debug.count(ori.ClassName) == 0) {
+          printf("[disappear] %s\n", ori.ClassName.c_str());
+        }
+      }
+      assert(newOrder.size() == classes.size());
+      classes = newOrder;
+    };
+    for (auto& klass : package.Classes) {
+      typeMap[klass.ClassName] = 1;
+    }
+    for (auto& klass : package.Structures) {
+      typeMap[klass.ClassName] = 2;
+    }
+
+    // 找出所有自类型引用
+    for (auto& klass : package.Classes) {
+      processStruct(klass, classMp);
+    }
+    for (auto& klass : package.Structures) {
+      processStruct(klass, structMp);
+    }
+    inclassTopo(package.Classes, classMp);
+    inclassTopo(package.Structures, structMp);
   }
 
   static void TopoSort() {
@@ -398,6 +574,7 @@ class RefGraphSolver
 public:
   static void Process(std::vector<UE_UPackage>& packages) {
     LoadUnrealPackageDef();
+
     for (UE_UPackage& package : packages) {
       LoadPackageDef(package);
     }
@@ -408,6 +585,16 @@ public:
 
     for (UE_UPackage& package : packages) {
       BuildRefGraph(package);
+    }
+
+    if (verboseDebug) {
+      printf("\nReference graph builded! \n");
+    }
+
+    // 处理类内的依赖关系
+
+    for (UE_UPackage& package : packages) {
+      FixPackageTypeOrder(package);
     }
 
     TopoSort();
