@@ -15,6 +15,7 @@
  - Boundary
  - The Cycle: Frontier
  - Calabiyau
+ - Seria
 ### Supported engine versions: 
 - UE 4.23-4.27
 ### Usage:
