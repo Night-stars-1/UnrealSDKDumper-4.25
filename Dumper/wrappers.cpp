@@ -1044,10 +1044,11 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
   out->FullName = ProcessUTF8Char(fn.GetFullName());
   out->Flags = fn.GetFunctionFlags();
   out->Func = fn.GetFunc();
+  out->FuncName = fn.GetName();
 
+  std::unordered_map<std::string, int> paramCntMp;
   auto generateParam = [&](IProperty *prop) {
     auto flags = prop->GetPropertyFlags();
-    out->FuncName = fn.GetName();
     // if property has 'ReturnParm' flag
     if (flags & 0x400) {
       out->RetType = prop->GetType().second;
@@ -1057,14 +1058,21 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
     // if property has 'Parm' flag
     else if (flags & 0x80) {
       out->ParamTypes.push_back(prop->GetType().second);
+      auto ParamName = GetValidClassName(prop->GetName());
+      if (paramCntMp.count(ParamName) > 0) {
+        ParamName += fmt::format("_{}", ++paramCntMp[ParamName]);
+      }
+      else {
+        paramCntMp[ParamName] = 1;
+      }
       if (prop->GetArrayDim() > 1) {
-        out->Params += fmt::format("{}* {}, ", prop->GetType().second, GetValidClassName( prop->GetName()));
+        out->Params += fmt::format("{}* {}, ", prop->GetType().second, ParamName);
       } else {
         if (flags & 0x100) {
-          out->Params += fmt::format("{}& {}, ", prop->GetType().second, GetValidClassName(prop->GetName()));
+          out->Params += fmt::format("{}& {}, ", prop->GetType().second, ParamName);
         }
         else {
-          out->Params += fmt::format("{} {}, ", prop->GetType().second, GetValidClassName(prop->GetName()));
+          out->Params += fmt::format("{} {}, ", prop->GetType().second, ParamName);
         }
        
       }
@@ -1179,6 +1187,8 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   uint32 offset = s.Inherited;
   uint8 bitOffset = 0;
   std::unordered_map<std::string, int> memberNameCntMp;
+  std::unordered_map<std::string, int> functionNameCntMp;
+
   auto generateMember = [&](IProperty *prop, Member *m) {
     // if (object.GetCppName() == "FPropertyCollector") _CrtDbgBreak();
     auto arrDim = prop->GetArrayDim();
@@ -1256,7 +1266,11 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
       auto fn = child.Cast<UE_UFunction>();
       Function f;
       GenerateFunction(fn, &f);
-      s.Functions.push_back(f);
+      // to avoid the repeat function name ...
+      if (functionNameCntMp.count(f.FullName) == 0) {
+        functionNameCntMp[f.FullName] = 1;
+        s.Functions.push_back(f);
+      }
     } else if (child.IsA<UE_UProperty>()) {
       auto prop = child.Cast<UE_UProperty>();
       Member m;
