@@ -572,6 +572,10 @@ template <typename T> bool UE_UObject::IsA() const {
 class UE_UPackage {
 private:
   struct Member {
+    Member() {
+      isSuspectMember = false;
+    }
+    bool isSuspectMember;
     std::string Type;
     std::string Name;
     uint32 Offset = 0;

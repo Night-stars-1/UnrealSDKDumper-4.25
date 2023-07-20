@@ -1201,6 +1201,7 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     // if (object.GetCppName() == "FPropertyCollector") _CrtDbgBreak();
     auto arrDim = prop->GetArrayDim();
     m->Size = prop->GetSize() * arrDim;
+    m->isSuspectMember = false;
     if (m->Size == 0) {
       return;
     } // this shouldn't be zero
@@ -1225,7 +1226,13 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     else {
       memberNameCntMp[m->Name] = 1;
     }
-
+    if (m->Offset < s.Inherited) {
+      // Impossible situation, but some game still fucking appear
+      // mark the member to suspect member, and do not actually use it.
+      printf("[Warning] Bad member offset: [%s]->[%s] offset: %X \n", s.FullName.c_str(), m->Name.c_str(), m->Offset);
+      m->isSuspectMember = true;
+      return;
+    }
     if (m->Offset > offset) {
       UE_UPackage::FillPadding(object, s.Members, offset, bitOffset, m->Offset, findPointers);
     }
@@ -1461,7 +1468,12 @@ void UE_UPackage::SaveStruct(std::vector<Struct> &arr, FILE *file) {
   for (auto &s : arr) {
     fmt::print(file, "// {}\n// Size: {:#04x} (Inherited: {:#04x})\n{} {{\npublic:\n",  s.FullName, s.Size, s.Inherited, s.CppName);
     for (auto &m : s.Members) {
-      fmt::print(file, "\n\t{} {}; // {:#04x}({:#04x})", m.Type, m.Name, m.Offset, m.Size);
+      if (m.isSuspectMember) {
+        fmt::print(file, "\n\t// {} {}; // Bad member offset! {:#04x}({:#04x})", m.Type, m.Name, m.Offset, m.Size);
+      }
+      else {
+        fmt::print(file, "\n\t{} {}; // {:#04x}({:#04x})", m.Type, m.Name, m.Offset, m.Size);
+      }
     }
     if (s.Functions.size()) {
       fwrite("\n", 1, 1, file);
@@ -1477,7 +1489,12 @@ void UE_UPackage::SaveStructSpacing(std::vector<Struct> &arr, FILE *file) {
   for (auto &s : arr) {
     fmt::print(file, "// {}\n// Size: {:#04x} (Inherited: {:#04x})\n{} {{\npublic:\n", s.FullName, s.Size, s.Inherited, s.CppName);
     for (auto &m : s.Members) {
-      fmt::print(file, "\n\t{:69} {:60} // {:#04x}({:#04x})", m.Type, m.Name + ";", m.Offset, m.Size);
+      if (m.isSuspectMember) {
+        fmt::print(file, "\n\t// {:69} {:60} //  Bad member offset! {:#04x}({:#04x})", m.Type, m.Name + ";", m.Offset, m.Size);
+      }
+      else {
+        fmt::print(file, "\n\t{:69} {:60} // {:#04x}({:#04x})", m.Type, m.Name + ";", m.Offset, m.Size);
+      }
     }
     if (s.Functions.size()) {
       fwrite("\n", 1, 1, file);
