@@ -1090,7 +1090,7 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
 }
 
 std::string UE_UPackage::GetValidClassName(std::string str) {
-  char chars[] = " /\\:*?\"<>|+().&";
+  char chars[] = " /\\:*?\"<>|+().&-";
   for (auto c : chars) {
     size_t pos = str.find(c);
     while (pos != std::string::npos) {
