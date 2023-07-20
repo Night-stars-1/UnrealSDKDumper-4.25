@@ -50,6 +50,9 @@
     <ClCompile Include="EngineHeaderExport.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="ClassSizeFixer.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -80,6 +83,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassSizeFixer.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

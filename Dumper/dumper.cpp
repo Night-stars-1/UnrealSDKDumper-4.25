@@ -7,6 +7,7 @@
 #include "wrappers.h"
 #include "RefGraphSolver.h"
 #include "EngineHeaderExport.h"
+#include "ClassSizeFixer.h"
 
 Dumper::~Dumper() {
   if (Image) VirtualFree(Image, 0, MEM_RELEASE);
@@ -214,8 +215,17 @@ STATUS Dumper::Dump() {
       bool lock = true;
       if (PackageName) lock = false;
 
-      // 先全部处理
+      // 先修复大小
       for (UE_UPackage package : packages) {
+        fmt::print("\rFixing class size: {}/{}", i++, packages.size());
+        ClassSizeFixer::LoadPackage(package);
+        processedPackage.push_back(package);
+      }
+      int fixedClassCnt = ClassSizeFixer::FixAllPackage(processedPackage);
+      printf("fixed %d classes size!\n", fixedClassCnt);
+      i = 1;
+      // 先全部处理
+      for (UE_UPackage& package : processedPackage) {
         fmt::print("\rProcessing: {}/{}", i++, packages.size());
 
         if (!lock && package.GetObject().GetName() == PackageName) {
@@ -223,7 +233,6 @@ STATUS Dumper::Dump() {
           lock = true;
         }
         package.Process();
-        processedPackage.push_back(package);
       }
 
       // 再解决依赖关系问题

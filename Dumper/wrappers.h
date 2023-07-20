@@ -6,6 +6,7 @@
 namespace fs = std::filesystem;
 
 class RefGraphSolver;
+class ClassSizeFixer;
 
 // Wrapper for 'FILE*' that closes the file handle when it goes out of scope
 class File {
@@ -180,6 +181,7 @@ public:
 
 class UE_UStruct : public UE_UField {
 public:
+  uint32 FixedSize = 0;
   using UE_UField::UE_UField;
   UE_UStruct GetSuper() const;
   UE_FField GetChildProperties() const;
@@ -642,4 +644,5 @@ public:
   UE_UObject GetObject() const;
 
   friend RefGraphSolver;
+  friend ClassSizeFixer;
 };

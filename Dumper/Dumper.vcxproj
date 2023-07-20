@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\include\fmt\format.cc" />
+    <ClCompile Include="ClassSizeFixer.cpp" />
     <ClCompile Include="dumper.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="EngineHeaderExport.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClassSizeFixer.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="dumper.h" />
     <ClInclude Include="engine.h" />

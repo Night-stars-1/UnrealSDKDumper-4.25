@@ -5,6 +5,7 @@
 #include "engine.h"
 #include "memory.h"
 #include "wrappers.h"
+#include "ClassSizeFixer.h"
 
 std::pair<bool, uint16> UE_FNameEntry::Info() const {
   auto info = Read<uint16>(object + offsets.FNameEntry.Info);
@@ -1160,7 +1161,11 @@ std::unordered_map<std::string, int> typeDefCnt;
 
 void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers) {
   Struct s;
-  s.Size = object.GetSize();
+  //s.Size = object.GetSize();
+  if(ClassSizeFixer::sizeMp.count(object.GetAddress()))
+    s.Size = ClassSizeFixer::sizeMp[object.GetAddress()]; // Fix the class
+  else
+    s.Size = object.GetSize();
   if (s.Size == 0) {
     return;
   }
@@ -1189,16 +1194,17 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   
   if (super) {
     s.CppName += " : public " + super.GetCppName();
-    s.Inherited = super.GetSize();
+    //s.Inherited = super.GetSize();
+    s.Inherited = ClassSizeFixer::sizeMp[super.GetAddress()];
   }
 
   uint32 offset = s.Inherited;
+
   uint8 bitOffset = 0;
   std::unordered_map<std::string, int> memberNameCntMp;
   std::unordered_map<std::string, int> functionNameCntMp;
 
   auto generateMember = [&](IProperty *prop, Member *m) {
-    // if (object.GetCppName() == "FPropertyCollector") _CrtDbgBreak();
     auto arrDim = prop->GetArrayDim();
     m->Size = prop->GetSize() * arrDim;
     m->isSuspectMember = false;
@@ -1227,6 +1233,7 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
       memberNameCntMp[m->Name] = 1;
     }
     if (m->Offset < s.Inherited) {
+      // Should be solved by ClassSizeFixer and this will not appear!
       // Impossible situation, but some game still fucking appear
       // mark the member to suspect member, and do not actually use it.
       printf("[Warning] Bad member offset: [%s]->[%s] offset: %X \n", s.FullName.c_str(), m->Name.c_str(), m->Offset);
