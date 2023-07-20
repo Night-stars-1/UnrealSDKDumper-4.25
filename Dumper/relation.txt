@@ -32,6 +32,7 @@ OnlineSubsystemUtils referes CoreUObject
 OnlineSubsystemUtils referes CppTypes
 OnlineSubsystemUtils referes DeveloperSettings
 OnlineSubsystemUtils referes Engine
+OnlineSubsystemUtils referes OnlineSubsystem
 RandomBuff_28 referes Game
 RandomBuff_42 referes Game
 OnlineSubsystem referes BasicTypes
@@ -54,6 +55,7 @@ RandomBuff_25 referes Game
 GamePlayerCameraManager referes CoreUObject
 GamePlayerCameraManager referes CppTypes
 GamePlayerCameraManager referes Engine
+GamePlayerCameraManager referes EnumInitSnow
 GamePlayerCameraManager referes Game
 GamePlayerCameraManager referes Niagara
 uw_fight_player referes CppTypes
@@ -78,6 +80,7 @@ UnLua referes CoreUObject
 UnLua referes CppTypes
 UnLua referes Engine
 UnLua referes Game
+UnLua referes InputCore
 UnLua referes SeasunAccount
 UnLua referes UMG
 RandomBuff_7 referes Game
@@ -754,6 +757,7 @@ LiveLinkInterface referes CoreUObject
 LiveLinkInterface referes CppTypes
 MagicLeapHandTracking referes CppTypes
 MagicLeapHandTracking referes Engine
+MagicLeapHandTracking referes InputCore
 MagicLeapHandTracking referes LiveLinkInterface
 ABP_girl002_prop02 referes AnimGraphRuntime
 ABP_girl002_prop02 referes CppTypes
@@ -824,6 +828,7 @@ ImgMedia referes CppTypes
 ImgMedia referes Engine
 ImgMedia referes MediaAssets
 BP_LevelTaskLibrary referes CppTypes
+BP_LevelTaskLibrary referes EFightTipsType
 BP_LevelTaskLibrary referes Engine
 ImgMediaFactory referes BasicTypes
 ImgMediaFactory referes CoreUObject
@@ -1152,6 +1157,7 @@ TimeManagement referes CppTypes
 TimeManagement referes Engine
 uw_fight_level_occupy_smalllist referes Game
 uw_fight_level_occupy_smalllist referes UMG
+AIEvent_MoveTo referes AIModule
 AIEvent_MoveTo referes CppTypes
 AIEvent_MoveTo referes Engine
 AIEvent_MoveTo referes Game
@@ -1458,6 +1464,7 @@ Panel_Cd_Animation referes Engine
 Panel_Cd_Animation referes Game
 Panel_Cd_Animation referes UMG
 RandomBuff_58 referes Game
+Tools_fun referes CollisionType_Enum
 Tools_fun referes CppTypes
 Tools_fun referes Engine
 RandomBuff_57 referes Game
@@ -1683,6 +1690,7 @@ umg_dialogue referes SlateCore
 umg_dialogue referes UMG
 umg_dialogue referes uw_dialogue_gamepad_indicator
 umg_dialogue referes uw_dialogue_placename
+AIEvent_Girl002_prop01_Skill1MoveToTarget referes AIModule
 AIEvent_Girl002_prop01_Skill1MoveToTarget referes BaseCharacter
 AIEvent_Girl002_prop01_Skill1MoveToTarget referes CoreUObject
 AIEvent_Girl002_prop01_Skill1MoveToTarget referes CppTypes
@@ -1836,6 +1844,7 @@ umg_camerasetting referes CoreUObject
 umg_camerasetting referes CppTypes
 umg_camerasetting referes Engine
 umg_camerasetting referes Game
+umg_camerasetting referes SlateCore
 umg_camerasetting referes UMG
 uw_fight_MonBloodbar referes Game
 uw_fight_MonBloodbar referes UMG
@@ -2057,6 +2066,7 @@ ABP_PostProcessAnim referes Game
 ABP_PostProcessAnim referes SeasunAnimGraph
 DefaultCharacterStateMachine referes CppTypes
 DefaultCharacterStateMachine referes Engine
+DefaultCharacterStateMachine referes FireStateEvent
 DefaultCharacterStateMachine referes Game
 FireStateMachine referes BasePlayerStateMachine
 FireStateMachine referes CppTypes
@@ -2102,6 +2112,7 @@ uw_fight_fire_button_left referes UMG
 uw_fight_bar_girl008a referes CppTypes
 uw_fight_bar_girl008a referes Engine
 uw_fight_bar_girl008a referes Game
+uw_fight_bar_girl008a referes UMG
 BP_SkillCollision_Boss_204 referes Engine
 BP_SkillCollision_Boss_204 referes Game
 uw_fight_jump_button referes CppTypes
@@ -2454,6 +2465,7 @@ LevelStarTask_2 referes BasicTypes
 LevelStarTask_2 referes CppTypes
 LevelStarTask_2 referes Engine
 LevelStarTask_2 referes Game
+LevelStarTask_2 referes GameTask
 BP_girl004_Prop02_2_New referes CoreUObject
 BP_girl004_Prop02_2_New referes CppTypes
 BP_girl004_Prop02_2_New referes Engine
@@ -2658,6 +2670,7 @@ Drop_Box01 referes Niagara
 PlayPlotEvent referes BasicTypes
 PlayPlotEvent referes CppTypes
 PlayPlotEvent referes GameTask
+PlayPlotEvent referes Plot
 monster_part_pedestal_hp2_component referes Game
 uw_fight_aimimg2 referes CppTypes
 uw_fight_aimimg2 referes Engine
@@ -2893,6 +2906,7 @@ ActiveSubTaskEvent referes GameTask
 LevelStarTask_5 referes CppTypes
 LevelStarTask_5 referes Engine
 LevelStarTask_5 referes Game
+LevelStarTask_5 referes GameTask
 LevelStarTask_10 referes BasicTypes
 LevelStarTask_10 referes CppTypes
 LevelStarTask_10 referes Engine

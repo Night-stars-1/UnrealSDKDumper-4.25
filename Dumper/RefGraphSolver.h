@@ -259,7 +259,6 @@ class RefGraphSolver
             refTypes.insert(purename);
         }
       }
-
       // 处理函数类型依赖
       for (auto& function : klass.Functions) {
         // 处理返回值
@@ -330,7 +329,13 @@ class RefGraphSolver
               goto end;
             }
             else {
-              if (ignoreFuncParamRef) continue;
+              auto isEnumType = [](std::string& type) {
+                if (type.size() <= 4) return false;
+                if (type.substr(0, 4) == "enum") return true;
+                return false;
+              };
+              if (ignoreFuncParamRef && !isEnumType(paramtype)) continue;
+              printf("insert  %s\n", purename.c_str());
               refTypes.insert(purename);
             }
           }
