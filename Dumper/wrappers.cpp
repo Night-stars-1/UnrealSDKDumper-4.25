@@ -1069,6 +1069,9 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out, std::unordere
       else {
         paramCntMp[ParamName] = 1;
       }
+      if (ParamName[0] >= '0' && ParamName[0] <= '9') {
+        ParamName = "_" + ParamName;
+      }
       if (prop->GetArrayDim() > 1) {
         out->Params += fmt::format("{}* {}, ", prop->GetType().second, ParamName);
       } else {
