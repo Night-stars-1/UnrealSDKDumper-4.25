@@ -563,7 +563,7 @@ class RefGraphSolver
       }
     }
     if (cnt != packageNodes.size()) {
-      printf("[Warning] Not all packages are included in the header for the reference problem.");
+      printf("[Warning] Not all packages are included in the header for the reference problem. \n");
       for (Node* node : packageNodes) {
         if (node->indeg != 0) {
           printf("\tPackageName: %s\n", node->packageName.c_str());

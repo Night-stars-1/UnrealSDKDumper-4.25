@@ -1041,7 +1041,7 @@ void UE_UPackage::FillPadding(UE_UStruct object, std::vector<Member>& members, u
 }
 
 void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
-  out->FullName = fn.GetFullName();
+  out->FullName = ProcessUTF8Char(fn.GetFullName());
   out->Flags = fn.GetFunctionFlags();
   out->Func = fn.GetFunc();
 
@@ -1089,7 +1089,44 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
   }
 }
 
+std::string UE_UPackage::ProcessUTF8Char(std::string input) {
+  // ÒÆ³ý¿Õ×Ö·û
+  std::string tmp;
+  for (char ch : input) {
+    if (ch != '\0') {
+      tmp += ch;
+    }
+  }
+  std::string result;
+  // ×ªÒå·Ç·¨×Ö·û
+  for (std::size_t i = 0; i < tmp.size(); ++i) {
+    char ch = tmp[i];
+    if ((ch & 0x80) == 0x00) {
+      // Single-byte character (ASCII range)
+      result += ch;
+    }
+    else if ((ch & 0xE0) == 0xC0) {
+      // Two-byte character (UTF-8 encoded Chinese character)
+      result += ch;
+      result += tmp[++i];
+    }
+    else if ((ch & 0xF0) == 0xE0) {
+      // Three-byte character (UTF-8 encoded Chinese character)
+      result += ch;
+      result += tmp[++i];
+      result += tmp[++i];
+    }
+    else {
+      // Not a valid UTF-8 character, replace with byte code
+      result += "_x" + std::to_string(static_cast<unsigned char>(ch));
+    }
+  }
+  return result;
+}
+
 std::string UE_UPackage::GetValidClassName(std::string str) {
+
+  // step1: Ìæ»»·Ç·¨µÄ×Ö·û
   char chars[] = " /\\:*?\"<>|+().&-";
   for (auto c : chars) {
     size_t pos = str.find(c);
@@ -1098,6 +1135,8 @@ std::string UE_UPackage::GetValidClassName(std::string str) {
       pos = str.find(c);
     }
   }
+  str = ProcessUTF8Char(str);
+
   return str;
 }
 
@@ -1111,7 +1150,8 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     return;
   }
   s.Inherited = 0;
-  s.FullName = object.GetFullName();
+
+  s.FullName = ProcessUTF8Char(object.GetFullName());
   s.ClassName = object.GetCppName();
   if (typeDefCnt.count(s.ClassName)) {
     s.ClassName += fmt::format("_def{}", ++typeDefCnt[s.ClassName]);
@@ -1343,7 +1383,7 @@ void UE_UPackage::FixKeywordConflict(std::string& tocheck) {
 
 void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
   Enum e;
-  e.FullName = object.GetFullName();
+  e.FullName = ProcessUTF8Char(object.GetFullName());
  
   auto names = object.GetNames();
   
