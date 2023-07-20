@@ -1459,7 +1459,7 @@ void UE_UPackage::GenerateEnum(UE_UEnum object, std::vector<Enum> &arr) {
 
 void UE_UPackage::SaveStruct(std::vector<Struct> &arr, FILE *file) {
   for (auto &s : arr) {
-    fmt::print(file, "// {}\n// Size: {:#04x} (Inherited: {:#04x})\n{} {{",  s.FullName, s.Size, s.Inherited, s.CppName);
+    fmt::print(file, "// {}\n// Size: {:#04x} (Inherited: {:#04x})\n{} {{\npublic:\n",  s.FullName, s.Size, s.Inherited, s.CppName);
     for (auto &m : s.Members) {
       fmt::print(file, "\n\t{} {}; // {:#04x}({:#04x})", m.Type, m.Name, m.Offset, m.Size);
     }
@@ -1475,7 +1475,7 @@ void UE_UPackage::SaveStruct(std::vector<Struct> &arr, FILE *file) {
 
 void UE_UPackage::SaveStructSpacing(std::vector<Struct> &arr, FILE *file) {
   for (auto &s : arr) {
-    fmt::print(file, "// {}\n// Size: {:#04x} (Inherited: {:#04x})\n{} {{", s.FullName, s.Size, s.Inherited, s.CppName);
+    fmt::print(file, "// {}\n// Size: {:#04x} (Inherited: {:#04x})\n{} {{\npublic:\n", s.FullName, s.Size, s.Inherited, s.CppName);
     for (auto &m : s.Members) {
       fmt::print(file, "\n\t{:69} {:60} // {:#04x}({:#04x})", m.Type, m.Name + ";", m.Offset, m.Size);
     }

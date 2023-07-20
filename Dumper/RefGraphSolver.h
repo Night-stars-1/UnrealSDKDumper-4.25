@@ -335,7 +335,7 @@ class RefGraphSolver
                 return false;
               };
               if (ignoreFuncParamRef && !isEnumType(paramtype)) continue;
-              printf("insert  %s\n", purename.c_str());
+              // printf("insert  %s\n", purename.c_str());
               refTypes.insert(purename);
             }
           }
