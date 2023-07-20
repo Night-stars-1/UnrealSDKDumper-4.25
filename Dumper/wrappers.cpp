@@ -1040,11 +1040,15 @@ void UE_UPackage::FillPadding(UE_UStruct object, std::vector<Member>& members, u
   }
 }
 
-void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
+void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out, std::unordered_map<std::string, int>& memberMap) {
   out->FullName = ProcessUTF8Char(fn.GetFullName());
   out->Flags = fn.GetFunctionFlags();
   out->Func = fn.GetFunc();
   out->FuncName = fn.GetName();
+  out->FuncName = GetValidClassName(ProcessUTF8Char(out->FuncName));
+  if(memberMap.count(out->FuncName) > 0) {
+    out->FuncName += fmt::format("_{}", ++memberMap[out->FuncName]);
+  }
 
   std::unordered_map<std::string, int> paramCntMp;
   auto generateParam = [&](IProperty *prop) {
@@ -1053,7 +1057,7 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
     if (flags & 0x400) {
       out->RetType = prop->GetType().second;
       
-      out->CppName = prop->GetType().second + " " + GetValidClassName(fn.GetName());
+      out->CppName = prop->GetType().second + " " + out->FuncName;
     }
     // if property has 'Parm' flag
     else if (flags & 0x80) {
@@ -1093,7 +1097,7 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out) {
 
   if (out->CppName.size() == 0) {
     out->RetType = "void";
-    out->CppName = "void " + GetValidClassName(fn.GetName());
+    out->CppName = "void " + out->FuncName;
   }
 }
 
@@ -1161,6 +1165,7 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
 
   s.FullName = ProcessUTF8Char(object.GetFullName());
   s.ClassName = object.GetCppName();
+
   if (typeDefCnt.count(s.ClassName)) {
     s.ClassName += fmt::format("_def{}", ++typeDefCnt[s.ClassName]);
   }
@@ -1262,21 +1267,25 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   }
 
   for (auto child = object.GetChildren(); child; child = child.GetNext()) {
-    if (child.IsA<UE_UFunction>()) {
-      auto fn = child.Cast<UE_UFunction>();
-      Function f;
-      GenerateFunction(fn, &f);
-      // to avoid the repeat function name ...
-      if (functionNameCntMp.count(f.FullName) == 0) {
-        functionNameCntMp[f.FullName] = 1;
-        s.Functions.push_back(f);
-      }
-    } else if (child.IsA<UE_UProperty>()) {
+    if (child.IsA<UE_UProperty>()) {
       auto prop = child.Cast<UE_UProperty>();
       Member m;
       auto propInterface = prop.GetInterface();
       generateMember(&propInterface, &m);
       s.Members.push_back(m);
+    }
+  }
+
+  for (auto child = object.GetChildren(); child; child = child.GetNext()) {
+    if (child.IsA<UE_UFunction>()) {
+      auto fn = child.Cast<UE_UFunction>();
+      Function f;
+      GenerateFunction(fn, &f, memberNameCntMp);
+      // to avoid the repeat function name ...
+      if (functionNameCntMp.count(f.FullName) == 0) {
+        functionNameCntMp[f.FullName] = 1;
+        s.Functions.push_back(f);
+      }
     }
   }
 

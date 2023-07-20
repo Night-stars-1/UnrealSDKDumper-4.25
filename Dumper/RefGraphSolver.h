@@ -555,7 +555,7 @@ class RefGraphSolver
       Node* front = queue.front();
       queue.pop();
       cnt++;
-      if(verboseDebug) printf("package[%d]: %s\n", cnt, front->packageName.c_str());
+      // if(verboseDebug) printf("package[%d]: %s\n", cnt, front->packageName.c_str());
       packageHeaderOrder.push_back(front->packageName);
       for (auto other : front->neighbors) {
         other->indeg--;

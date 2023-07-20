@@ -618,7 +618,8 @@ private:
   static void GenerateBitPadding(std::vector<Member>& members, uint32 offset, uint8 bitOffset, uint8 size);
   static void GeneratePadding(std::vector<Member>& members, uint32 offset, uint32 size);
   static void FillPadding(UE_UStruct object, std::vector<Member>& members, uint32& offset, uint8& bitOffset, uint32 end, bool findPointers);
-  static void GenerateFunction(UE_UFunction fn, Function* out);
+  static void GenerateFunction(UE_UFunction fn, Function* out, std::unordered_map<std::string, int>& memberMap);
+  // static void GenerateFunction(UE_UFunction fn, Function* out);
   static std::string ProcessUTF8Char(std::string input);
   static std::string GetValidClassName(std::string str);
   static void GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers);
