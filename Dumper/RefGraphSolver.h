@@ -95,6 +95,7 @@ class RefGraphSolver
       }
     };
     auto trim = [](std::string& input) {
+      if (input == "") return;
       size_t start = 0;
       size_t end = input.length() - 1;
 

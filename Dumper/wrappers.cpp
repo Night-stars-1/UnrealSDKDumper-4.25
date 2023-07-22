@@ -1315,6 +1315,16 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
       }
     }
   }
+  // 生成StaticClass方法
+  {
+    Function static_class_fn;
+    static_class_fn.CppName = "static UClass* StaticClass";
+    static_class_fn.FuncName = "StaticClass";
+    static_class_fn.RetType = "UClass*";
+    static_class_fn.FullName = "Dumper_Generated_Function";
+    static_class_fn.Func = Base;
+    s.Functions.push_back(static_class_fn);
+  }
 
   if (s.Size > offset) {
     UE_UPackage::FillPadding(object, s.Members, offset, bitOffset, s.Size, findPointers);
