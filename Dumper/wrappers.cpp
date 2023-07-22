@@ -1190,12 +1190,6 @@ std::unordered_map<std::string, int> typeDefCnt;
 
 void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers) {
   Struct s;
-  if (object.GetCppName() == "FSMConnectionValidator") {
-    _CrtDbgBreak();
-  }
-  if (object.GetCppName() == "FSMTextDisplayWidgetInfo") {
-    _CrtDbgBreak();
-  }
   //s.Size = object.GetSize();
   if(ClassSizeFixer::sizeMp.count(object.GetAddress()))
     s.Size = ClassSizeFixer::sizeMp[object.GetAddress()]; // Fix the class
