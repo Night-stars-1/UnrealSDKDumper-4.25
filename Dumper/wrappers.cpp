@@ -2,11 +2,13 @@
 #include <algorithm>
 #include <fmt/core.h>
 #include <hash/hash.h>
+#include <algorithm>
 #include "engine.h"
 #include "memory.h"
 #include "wrappers.h"
 #include "ClassSizeFixer.h"
 #include "EngineHeaderExport.h"
+#include <cassert>
 
 std::pair<bool, uint16> UE_FNameEntry::Info() const {
   auto info = Read<uint16>(object + offsets.FNameEntry.Info);
@@ -1063,15 +1065,25 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out, std::unordere
 
   std::unordered_map<std::string, int> paramCntMp;
   auto generateParam = [&](IProperty *prop) {
+    
+    auto param_offset = prop->GetOffset();
+    auto param_size = prop->GetSize();
     auto flags = prop->GetPropertyFlags();
     // if property has 'ReturnParm' flag
     if (flags & 0x400) {
+      ParamInfo retInfo;
       out->RetType = prop->GetType().second;
-      
+      retInfo.Name = "ReturnValue";
+      retInfo.Offset = param_offset;
+      retInfo.Size = param_size;
+      retInfo.Type = out->RetType;
+      retInfo.flags = flags;
+      out->paramInfo.push_back(retInfo);
       out->CppName = prop->GetType().second + " " + out->FuncName;
     }
     // if property has 'Parm' flag
     else if (flags & 0x80) {
+      ParamInfo paramInfo;
       out->ParamTypes.push_back(prop->GetType().second);
       auto ParamName = GetValidClassName(prop->GetName());
       if (paramCntMp.count(ParamName) > 0) {
@@ -1083,17 +1095,24 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out, std::unordere
       if (ParamName[0] >= '0' && ParamName[0] <= '9') {
         ParamName = "_" + ParamName;
       }
+      paramInfo.Offset = param_offset;
+      paramInfo.Size = param_size;
+      paramInfo.flags = flags;
+      paramInfo.Name = ParamName;
       if (prop->GetArrayDim() > 1) {
         out->Params += fmt::format("{}* {}, ", prop->GetType().second, ParamName);
+        paramInfo.Type = fmt::format("{}*", prop->GetType().second);
       } else {
         if (flags & 0x100) {
           out->Params += fmt::format("{}& {}, ", prop->GetType().second, ParamName);
+          paramInfo.Type = prop->GetType().second;
         }
         else {
           out->Params += fmt::format("{} {}, ", prop->GetType().second, ParamName);
+          paramInfo.Type = prop->GetType().second;
         }
-       
       }
+      out->paramInfo.push_back(paramInfo);
     }
   };
 
@@ -1609,6 +1628,7 @@ void UE_UPackage::SavePackageHeader(bool hasClassHeader, bool hasStructHeader, F
   if (hasClassHeader) {
     fmt::print(file, "#include \"{}_classes.h\"\n", packageName);
   }
+  fmt::print(file, "#include \"{}_param.h\"\n", packageName);
 }
 
 void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
@@ -1625,6 +1645,9 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
   EngineHeaderExport::ReplaceVAR(gameInfo);
   fmt::print(cppFile, "{}", gameInfo);
   fmt::print(paramFile, "{}", gameInfo);
+  fmt::print(paramFile, "#pragma once\n\n");
+  AddAlignDef(paramFile, 1);
+  fmt::print(paramFile, "\n\nnamespace {}\n{{\n", GNameSpace);
   fmt::print(cppFile, "#include \"../SDK.h\"");
   fmt::print(cppFile, "\n\nnamespace {}\n{{\n", GNameSpace);
   auto GenerateFunctionHeader = [](FILE* file, FunctionHeader &header) {
@@ -1659,13 +1682,79 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
     fmt::print(file, "\t\treturn ptr;\n");
     fmt::print(file, "\t}}\n\n");
   };
-  for (Struct& stru : this->Structures) {
+
+  auto GenerateProxyFunctionParamStruct = [](FILE* file, Function& func) {
+    // 生成函数参数结构体
+    if (func.FullName == "Dumper_Generated_Function") return;
+    static std::unordered_map<std::string, int> paramStructNameMp;
+
+    // 生成的结构体的名字
+    func.GeneratedParamName = GetValidClassName(func.FullName);
+    if (paramStructNameMp.count(func.GeneratedParamName)) {
+      func.GeneratedParamName = func.GeneratedParamName + fmt::format("_Param_{}", ++paramStructNameMp[func.GeneratedParamName]);
+    }
+    else {
+      paramStructNameMp[func.GeneratedParamName] = 1;
+      func.GeneratedParamName = func.GeneratedParamName + "_Param";
+    }
+
+    // 对func的参数列表按偏移排序然后生成结构体
+    std::sort(func.paramInfo.begin(), func.paramInfo.end(), [](const ParamInfo& a, const ParamInfo& b) {
+      return a.Offset < b.Offset;
+      });
+    uint32 offset = 0;
+    std::vector<Member> members;
+    for (auto& param : func.paramInfo) {
+      assert(param.Size != 0);
+      assert(param.Offset >= offset);
+      if (param.Offset > offset) {
+        Member padding;
+        padding.Type = "char";
+        padding.Name = fmt::format("pad_{:0X}[{:#0x}]", offset, param.Offset - offset);
+        padding.Offset = offset;
+        padding.Size = param.Offset - offset;
+        members.push_back(padding);
+        offset += padding.Size;
+      }
+      Member mParam;
+      mParam.Type = param.Type;
+      mParam.Name = param.Name;
+      mParam.Offset = param.Offset;
+      mParam.Size = param.Size;
+      mParam.isSuspectMember = false;
+      offset += mParam.Size;
+      members.push_back(mParam);
+    }
+    fmt::print(file, "\tstruct {}\n\t{{\n\tpublic:\n", func.GeneratedParamName);
+    for (auto& m : members) {
+      fmt::print(file, "\n\t\t{} {}; // {:#04x}({:#04x})", m.Type, m.Name, m.Offset, m.Size);
+    }
+    fmt::print(file, "\n\t}};\n\n");
+  };
+  auto GenerateProxyFunctionBody = []() {
+    // 生成函数体
+  };
+  for (auto& stru : this->Structures) {
     GenerateStaticClass(cppFile, stru);
   }
-  for (Struct& stru : this->Classes) {
+  for (auto& stru : this->Classes) {
     GenerateStaticClass(cppFile, stru);
   }
+  // 开始生成代理函数
+  for (auto& stru : this->Structures) {
+    for (auto& func : stru.Functions) {
+      GenerateProxyFunctionParamStruct(paramFile, func);
+    }
+  }
+  for (auto& stru : this->Classes) {
+    for (auto& func : stru.Functions) {
+      GenerateProxyFunctionParamStruct(paramFile, func);
+    }
+  }
+
   fmt::print(cppFile, "}}");
+  fmt::print(paramFile, "}}");
+  AddAlignDef(paramFile, 2);
 }
 
 bool UE_UPackage::Save(const fs::path &dir, bool spacing) {

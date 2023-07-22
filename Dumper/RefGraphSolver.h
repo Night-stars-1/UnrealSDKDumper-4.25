@@ -221,6 +221,7 @@ class RefGraphSolver
     std::set <std::string> refPackages;
 
     auto processStruct = [&refTypes, &refPackages](UE_UPackage::Struct& klass) {
+
       // ¥¶¿ÌºÃ≥–“¿¿µ
       auto& superName = klass.SuperName;
       if (superName == "FNone" && verboseDebug) {
@@ -276,6 +277,7 @@ class RefGraphSolver
               should_fix = true;
               function.RetType = "void";
               function.CppName = "void " + function.FuncName;
+              function.paramInfo.clear();
               break;
             }
           }
@@ -310,6 +312,7 @@ class RefGraphSolver
               if (typeDefMap.count(tname) == 0) {
                 should_fix = true;
                 function.Params = "/*" + function.Params + "*/";
+                function.paramInfo.clear();
                 function.ParamTypes.clear();
                 goto end;
               }
@@ -327,6 +330,7 @@ class RefGraphSolver
             assert(purename != "");
             if (typeDefMap.count(purename) == 0) {
               function.Params = "/*" + function.Params + "*/";
+              function.paramInfo.clear();
               function.ParamTypes.clear();
               goto end;
             }

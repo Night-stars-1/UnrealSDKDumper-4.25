@@ -584,7 +584,15 @@ private:
     uint32 Offset = 0;
     uint32 Size = 0;
   };
+  struct ParamInfo {
+    uint32 Offset = 0;
+    uint32 Size = 0;
+    std::string Name;
+    std::string Type;
+    uint64 flags;
+  };
   struct Function {
+    std::vector<ParamInfo> paramInfo;
     std::vector<std::string> ParamTypes;
     uint32 FuncFlag;
     std::string FuncName;
@@ -593,6 +601,7 @@ private:
     std::string CppName;
     std::string Params;
     std::string Flags;
+    std::string GeneratedParamName;
     uint64 Func = 0;
   };
   struct Struct {
