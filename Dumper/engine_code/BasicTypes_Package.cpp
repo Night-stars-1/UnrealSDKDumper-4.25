@@ -30,6 +30,14 @@ namespace VAR_NAMESPACE
 		
 		return true;
 	}
+	
+	/**
+	 * Initialize SDK
+	 */
+	bool InitSdk()
+	{
+		return InitSdk(L"VAR_GAME_NAME.exe", GOBJECT_OFFSET, GNAME_OFFSET, GWORLD_OFFSET);
+	}
 
 	// --------------------------------------------------
 	// # Structs Functions

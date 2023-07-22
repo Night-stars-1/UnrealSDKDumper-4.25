@@ -108,7 +108,11 @@ void Dumper::GenerateSDKHeader(const fs::path& dir) {
     fmt::print(file, "#pragma warning(disable: {})\n", code);
   }
 
-  fmt::print(file, "\n // SDK headers \n\n");
+  fmt::print(file, "\n// Note: The content of GlobalOffset.h should be updated by yourself!! \n\n");
+
+  fmt::print(file, "#include \"GlobalOffset.h\"\n");
+
+  fmt::print(file, "\n// SDK headers \n\n");
   for (auto& packageName : RefGraphSolver::packageHeaderOrder) {
     if (packageName == "CppTypes") continue; // ignore
 
@@ -206,7 +210,7 @@ STATUS Dumper::Dump() {
       fs::create_directories(path);
 
       // 输出引擎自带的头
-      EngineHeaderExport::Process(path);
+      EngineHeaderExport::Process(Directory);
 
       int i = 1;
       int saved = 0;

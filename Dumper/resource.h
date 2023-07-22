@@ -36,3 +36,5 @@
 
 #define COREUOBJECT_PARAM 245
 
+#define GLOBAL_OFFSET 244
+

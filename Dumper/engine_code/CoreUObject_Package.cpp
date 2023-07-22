@@ -11,7 +11,7 @@ namespace VAR_NAMESPACE
 	// # Structs Static Fields
 	// --------------------------------------------------
 	class TUObjectArray*                                        UObject::GObjects = nullptr;                             // 0x0000(0x0008) PREDEFINED PROPERTY
-
+	class UWorld**                                              UWorld::GWorld = nullptr;
 	// --------------------------------------------------
 	// # Structs Functions
 	// --------------------------------------------------
