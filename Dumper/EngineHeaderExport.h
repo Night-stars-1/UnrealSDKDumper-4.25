@@ -31,6 +31,8 @@ public:
       std::make_pair(COREUOBJECT_PACKAGE, "CoreUObject_Package.h"),
       std::make_pair(COREUOBJECT_CLASSES, "CoreUObject_Classes.h"),
       std::make_pair(COREUOBJECT_STRUCT, "CoreUObject_Structs.h"),
+      std::make_pair(COREUOBJECT_CPP, "CoreUObject_Package.cpp"),
+      std::make_pair(BASICTYPES_CPP, "BasicTypes_Package.cpp"),
     };
     // 导出两个引擎文件
     for (auto& enginefile : EngineFiles) {

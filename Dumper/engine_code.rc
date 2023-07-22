@@ -13,3 +13,8 @@ COREUOBJECT_PACKAGE TEXTFILE "engine_code\\CoreUObject_Package.h"
 COREUOBJECT_CLASSES TEXTFILE "engine_code\\CoreUObject_Classes.h"
 
 COREUOBJECT_STRUCT TEXTFILE "engine_code\\CoreUObject_Structs.h"
+
+COREUOBJECT_CPP TEXTFILE "engine_code\\CoreUObject_Package.cpp"
+
+BASICTYPES_CPP TEXTFILE "engine_code\\BasicTypes_Package.cpp"
+

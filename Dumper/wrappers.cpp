@@ -1174,6 +1174,16 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   s.FullName = ProcessUTF8Char(object.GetFullName());
   s.ClassName = object.GetCppName();
 
+  if (s.ClassName == "UWorld") {
+    // 插入Gworld 惊静态成员变量
+    Member static_gworld;
+    static_gworld.Type = "static class UWorld**";
+    static_gworld.Offset = 0;
+    static_gworld.Name = "GWorld";
+    static_gworld.Size = 8;
+    s.Members.push_back(static_gworld);
+  }
+
   if (typeDefCnt.count(s.ClassName)) {
     s.ClassName += fmt::format("_def{}", ++typeDefCnt[s.ClassName]);
   }

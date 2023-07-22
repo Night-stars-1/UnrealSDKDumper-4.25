@@ -221,6 +221,7 @@ STATUS Dumper::Dump() {
         ClassSizeFixer::LoadPackage(package);
         processedPackage.push_back(package);
       }
+      printf("\n");
       int fixedClassCnt = ClassSizeFixer::FixAllPackage(processedPackage);
       printf("fixed %d classes size!\n", fixedClassCnt);
       i = 1;

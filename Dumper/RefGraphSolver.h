@@ -112,6 +112,7 @@ class RefGraphSolver
       input = input.substr(start, end - start + 1);
     };
     std::string res = fullTypeName;
+    removeSubstring(res, "static");
     removeSubstring(res, "enum");
     removeSubstring(res, "class");
     removeSubstring(res, "struct");

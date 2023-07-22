@@ -29,7 +29,7 @@ class ClassSizeFixer
       }
     }
     if (fixed) {
-      printf("Fixed class[%s] from 0x%X -> 0x%X \n", super.GetName().c_str(), super.GetSize(), sizeMp[superAddr]);
+      printf("Fixed class [%s] from 0x%X -> 0x%X \n", super.GetName().c_str(), super.GetSize(), sizeMp[superAddr]);
     }
     to_fix.FixedSize = sizeMp[superAddr];
     return fixed;
