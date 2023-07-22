@@ -220,8 +220,8 @@ class RefGraphSolver
     // 存储依赖的package，去重
     std::set <std::string> refPackages;
 
-    auto processStruct = [&refTypes, &refPackages](UE_UPackage::Struct& klass) {
-
+    auto processStruct = [&refTypes, &refPackages, &packageName](UE_UPackage::Struct& klass) {
+      
       // 处理继承依赖
       auto& superName = klass.SuperName;
       if (superName == "FNone" && verboseDebug) {
@@ -342,7 +342,8 @@ class RefGraphSolver
                 if (type.substr(0, 4) == "enum") return true;
                 return false;
               };
-              if (ignoreFuncParamRef && !isEnumType(paramtype)) continue;
+              // 只有指针才可以忽略
+              if (ignoreFuncParamRef && !isEnumType(paramtype) && paramtype.find("*") != std::string::npos) continue;
               // printf("insert  %s\n", purename.c_str());
               refTypes.insert(purename);
             }

@@ -80,6 +80,7 @@ OnlineSubsystem referes CppTypes
 NiagaraShader referes BasicTypes
 NiagaraShader referes CoreUObject
 NiagaraShader referes CppTypes
+CharacterMaterialLib referes BasicTypes
 CharacterMaterialLib referes CoreUObject
 CharacterMaterialLib referes CppTypes
 CharacterMaterialLib referes Engine
@@ -104,6 +105,7 @@ MovieScene referes BasicTypes
 MovieScene referes CoreUObject
 MovieScene referes CppTypes
 MovieScene referes Engine
+AudioMixer referes BasicTypes
 AudioMixer referes CoreUObject
 AudioMixer referes CppTypes
 AudioMixer referes Engine
@@ -147,6 +149,7 @@ UMG referes BasicTypes
 UMG referes CoreUObject
 UMG referes CppTypes
 UMG referes Engine
+UMG referes InputCore
 UMG referes MovieScene
 UMG referes MovieSceneTracks
 UMG referes PropertyPath
@@ -251,6 +254,7 @@ ControlRig referes RigVM
 uw_fight_pause_pc referes CoreUObject
 uw_fight_pause_pc referes Game
 uw_fight_pause_pc referes UMG
+Cartoon referes BasicTypes
 Cartoon referes CoreUObject
 Cartoon referes CppTypes
 Cartoon referes Engine
@@ -296,6 +300,7 @@ ChessMap referes NodeScript
 RandomBuff_75 referes CoreUObject
 RandomBuff_75 referes Game
 uw_fight_player_data referes CoreUObject
+ReplicationGraph referes BasicTypes
 ReplicationGraph referes CoreUObject
 ReplicationGraph referes CppTypes
 ReplicationGraph referes Engine
@@ -314,6 +319,7 @@ DungeonArchitectRuntime referes CoreUObject
 DungeonArchitectRuntime referes CppTypes
 DungeonArchitectRuntime referes Engine
 DungeonArchitectRuntime referes Landscape
+Richman referes BasicTypes
 Richman referes ChessMap
 Richman referes CoreUObject
 Richman referes CppTypes
@@ -334,6 +340,7 @@ AIModule referes Engine
 AIModule referes GameplayTags
 AIModule referes GameplayTasks
 AIModule referes NavigationSystem
+DesignerCore referes BasicTypes
 DesignerCore referes CoreUObject
 DesignerCore referes CppTypes
 create007_01_bp referes CollisionType_Enum
@@ -346,6 +353,7 @@ RawInput referes CppTypes
 RawInput referes DeveloperSettings
 RawInput referes Engine
 RawInput referes InputCore
+TPS_Survivors referes BasicTypes
 TPS_Survivors referes ChessMap
 TPS_Survivors referes CoreUObject
 TPS_Survivors referes CppTypes
@@ -390,6 +398,7 @@ BP_Bunker_Crate referes BP_Bunker
 BP_Bunker_Crate referes CoreUObject
 BP_Bunker_Crate referes CppTypes
 BP_Bunker_Crate referes Engine
+BP_Bunker_Crate referes Game
 BP_PreloadMaterials referes CoreUObject
 BP_PreloadMaterials referes Engine
 AnimationCore referes BasicTypes
@@ -456,6 +465,7 @@ umg_fight_pc referes CoreUObject
 umg_fight_pc referes CppTypes
 umg_fight_pc referes Engine
 umg_fight_pc referes Game
+umg_fight_pc referes SlateCore
 umg_fight_pc referes UMG
 umg_fight_pc referes umg_camerasetting
 umg_fight_pc referes uw_fight_MonBloodbar
@@ -560,6 +570,7 @@ SeasunAnimGraph referes CoreUObject
 SeasunAnimGraph referes CppTypes
 SeasunAnimGraph referes Engine
 SeasunAnimGraph referes PhysicsCore
+uw_fight_player_hp referes BasicTypes
 uw_fight_player_hp referes CoreUObject
 uw_fight_player_hp referes CppTypes
 uw_fight_player_hp referes Engine
@@ -731,6 +742,7 @@ uw_open_world_task referes CoreUObject
 uw_open_world_task referes CppTypes
 uw_open_world_task referes Game
 uw_open_world_task referes uw_open_world_task_item
+AutomationUtils referes BasicTypes
 AutomationUtils referes CoreUObject
 AutomationUtils referes CppTypes
 AutomationUtils referes Engine
@@ -839,6 +851,7 @@ FishingAnimLayer_Character referes CoreUObject
 FishingAnimLayer_Character referes CppTypes
 FishingAnimLayer_Character referes Engine
 MagicLeapAR referes AugmentedReality
+MagicLeapAR referes BasicTypes
 MagicLeapAR referes CoreUObject
 MagicLeapAR referes CppTypes
 MagicLeapAR referes Engine
@@ -871,6 +884,7 @@ uw_fight_jump_button referes CoreUObject
 uw_fight_jump_button referes CppTypes
 uw_fight_jump_button referes Engine
 uw_fight_jump_button referes Game
+uw_fight_jump_button referes SlateCore
 uw_fight_jump_button referes UMG
 uw_fight_jump_button referes uw_fight_skill_keybtn
 LiveLinkInterface referes BasicTypes
@@ -879,6 +893,7 @@ LiveLinkInterface referes CppTypes
 CastSkill referes CoreUObject
 CastSkill referes Engine
 CastSkill referes Game
+MagicLeapHandTracking referes BasicTypes
 MagicLeapHandTracking referes CoreUObject
 MagicLeapHandTracking referes CppTypes
 MagicLeapHandTracking referes Engine
@@ -897,6 +912,7 @@ uw_task_interaction_progress referes CoreUObject
 uw_task_interaction_progress referes CppTypes
 uw_task_interaction_progress referes Engine
 uw_task_interaction_progress referes Game
+uw_task_interaction_progress referes SlateCore
 uw_task_interaction_progress referes UMG
 Trap005 referes BasicTypes
 Trap005 referes CoreUObject
@@ -919,6 +935,7 @@ Emitter_Default referes Game
 MagicLeapPrivileges referes CoreUObject
 MagicLeapPrivileges referes CppTypes
 MagicLeapPrivileges referes Engine
+MagicLeapSecureStorage referes BasicTypes
 MagicLeapSecureStorage referes CoreUObject
 MagicLeapSecureStorage referes CppTypes
 MagicLeapSecureStorage referes Engine
@@ -932,6 +949,7 @@ DeadPerformance_Girl005_a01ThroughBullet referes CoreUObject
 DeadPerformance_Girl005_a01ThroughBullet referes CppTypes
 DeadPerformance_Girl005_a01ThroughBullet referes DeadPerformance_BlueprintBase
 DeadPerformance_Girl005_a01ThroughBullet referes Engine
+DeadPerformance_Girl005_a01ThroughBullet referes Game
 AvfMediaFactory referes CoreUObject
 AvfMediaFactory referes CppTypes
 ApplyHit_Base referes CoreUObject
@@ -950,6 +968,7 @@ MediaAssets referes BasicTypes
 MediaAssets referes CoreUObject
 MediaAssets referes CppTypes
 MediaAssets referes Engine
+MediaAssets referes MediaUtils
 RandomBuff_50 referes CoreUObject
 RandomBuff_50 referes Game
 PlayerTombstone referes BasicTypes
@@ -1012,11 +1031,13 @@ uw_fight_fire_button_aim referes CoreUObject
 uw_fight_fire_button_aim referes CppTypes
 uw_fight_fire_button_aim referes Engine
 uw_fight_fire_button_aim referes Game
+uw_fight_fire_button_aim referes SlateCore
 uw_fight_fire_button_aim referes UMG
 monster_part_hp2_component referes CoreUObject
 monster_part_hp2_component referes Game
 RandomBuff_5 referes CoreUObject
 RandomBuff_5 referes Game
+AndroidPermission referes BasicTypes
 AndroidPermission referes CoreUObject
 AndroidPermission referes CppTypes
 AndroidPermission referes Engine
@@ -1036,6 +1057,7 @@ ArchVisCharacter referes BasicTypes
 ArchVisCharacter referes CoreUObject
 ArchVisCharacter referes CppTypes
 ArchVisCharacter referes Engine
+AssetTags referes BasicTypes
 AssetTags referes CoreUObject
 AssetTags referes CppTypes
 AssetTags referes Engine
@@ -1061,6 +1083,7 @@ uw_fight_monster_tips referes CoreUObject
 uw_fight_monster_tips referes CppTypes
 uw_fight_monster_tips referes Engine
 uw_fight_monster_tips referes Game
+uw_fight_monster_tips referes SlateCore
 uw_fight_monster_tips referes UMG
 CustomMeshComponent referes CoreUObject
 CustomMeshComponent referes CppTypes
@@ -1091,6 +1114,7 @@ BP_Bunker_Plank referes BP_Bunker
 BP_Bunker_Plank referes CoreUObject
 BP_Bunker_Plank referes CppTypes
 BP_Bunker_Plank referes Engine
+BP_Bunker_Plank referes Game
 PhysXVehicles referes AnimGraphRuntime
 PhysXVehicles referes BasicTypes
 PhysXVehicles referes CoreUObject
@@ -1184,6 +1208,7 @@ CinematicCamera referes BasicTypes
 CinematicCamera referes CoreUObject
 CinematicCamera referes CppTypes
 CinematicCamera referes Engine
+uw_fight_player_hp_pc referes BasicTypes
 uw_fight_player_hp_pc referes CoreUObject
 uw_fight_player_hp_pc referes CppTypes
 uw_fight_player_hp_pc referes Engine
@@ -1203,6 +1228,7 @@ NavigationSystem referes BasicTypes
 NavigationSystem referes CoreUObject
 NavigationSystem referes CppTypes
 NavigationSystem referes Engine
+uw_fight_player_item_skill03 referes BasicTypes
 uw_fight_player_item_skill03 referes CoreUObject
 uw_fight_player_item_skill03 referes CppTypes
 uw_fight_player_item_skill03 referes Engine
@@ -1227,6 +1253,7 @@ uw_fight_level_task_pc referes CoreUObject
 uw_fight_level_task_pc referes CppTypes
 uw_fight_level_task_pc referes Game
 uw_fight_level_task_pc referes UMG
+ImageWriteQueue referes BasicTypes
 ImageWriteQueue referes CoreUObject
 ImageWriteQueue referes CppTypes
 ImageWriteQueue referes Engine
@@ -1242,6 +1269,7 @@ PhysicsCore referes Chaos
 PhysicsCore referes CoreUObject
 PhysicsCore referes CppTypes
 PhysicsCore referes DeveloperSettings
+Panel_Cd_Animation referes BasicTypes
 Panel_Cd_Animation referes CoreUObject
 Panel_Cd_Animation referes CppTypes
 Panel_Cd_Animation referes Engine
@@ -1299,6 +1327,7 @@ GameplayTags referes DeveloperSettings
 GameplayTags referes Engine
 MeshDescription referes CoreUObject
 MeshDescription referes CppTypes
+StaticMeshDescription referes BasicTypes
 StaticMeshDescription referes CoreUObject
 StaticMeshDescription referes CppTypes
 StaticMeshDescription referes MeshDescription
@@ -1321,6 +1350,7 @@ PropertyAccess referes CppTypes
 ObjectPool referes BasicTypes
 ObjectPool referes CoreUObject
 ObjectPool referes CppTypes
+Tools_fun referes BasicTypes
 Tools_fun referes CollisionType_Enum
 Tools_fun referes CoreUObject
 Tools_fun referes CppTypes
@@ -1356,6 +1386,7 @@ Bp_wpbase_scope referes Game
 Bp_wpbase_scope referes Niagara
 MoviePlayer referes CoreUObject
 MoviePlayer referes CppTypes
+uw_fight_injured_subitem1 referes BasicTypes
 uw_fight_injured_subitem1 referes CoreUObject
 uw_fight_injured_subitem1 referes CppTypes
 uw_fight_injured_subitem1 referes Engine
@@ -1409,6 +1440,7 @@ uw_fight_playercd referes CoreUObject
 uw_fight_playercd referes CppTypes
 uw_fight_playercd referes Engine
 uw_fight_playercd referes Game
+uw_fight_playercd referes SlateCore
 uw_fight_playercd referes UMG
 FieldSystemEngine referes Chaos
 FieldSystemEngine referes CoreUObject
@@ -1576,6 +1608,7 @@ uw_fight_npc_hpnpbreak referes CoreUObject
 uw_fight_npc_hpnpbreak referes CppTypes
 uw_fight_npc_hpnpbreak referes Engine
 uw_fight_npc_hpnpbreak referes Game
+uw_fight_npc_hpnpbreak referes SlateCore
 uw_fight_npc_hpnpbreak referes UMG
 RandomBuff_55 referes CoreUObject
 RandomBuff_55 referes Game
@@ -1633,6 +1666,7 @@ uw_fight_cross4 referes CoreUObject
 uw_fight_cross4 referes CppTypes
 uw_fight_cross4 referes Engine
 uw_fight_cross4 referes Game
+uw_fight_cross4 referes SlateCore
 uw_fight_cross4 referes UMG
 RandomBuff_29 referes CoreUObject
 RandomBuff_29 referes Game
@@ -1651,6 +1685,7 @@ fight_npc_hpnpbreak referes CoreUObject
 fight_npc_hpnpbreak referes Game
 RandomBuff_12 referes CoreUObject
 RandomBuff_12 referes Game
+uw_fight_player referes BasicTypes
 uw_fight_player referes CoreUObject
 uw_fight_player referes CppTypes
 uw_fight_player referes Engine
@@ -1665,6 +1700,7 @@ RandomBuff_13 referes CoreUObject
 RandomBuff_13 referes Game
 RandomBuff_7 referes CoreUObject
 RandomBuff_7 referes Game
+uw_fight_boss_hp_animation referes BasicTypes
 uw_fight_boss_hp_animation referes CoreUObject
 uw_fight_boss_hp_animation referes CppTypes
 uw_fight_boss_hp_animation referes Engine
@@ -1723,6 +1759,7 @@ Emitter_SkillMove referes BasicTypes
 Emitter_SkillMove referes CoreUObject
 Emitter_SkillMove referes CppTypes
 Emitter_SkillMove referes Game
+BP_LevelTaskLibrary referes BasicTypes
 BP_LevelTaskLibrary referes CoreUObject
 BP_LevelTaskLibrary referes CppTypes
 BP_LevelTaskLibrary referes EFightTipsType
@@ -1761,6 +1798,7 @@ KillMonsterBaseExecute referes BasicTypes
 KillMonsterBaseExecute referes CoreUObject
 KillMonsterBaseExecute referes CppTypes
 KillMonsterBaseExecute referes GameTask
+create003_03_bp referes BasicTypes
 create003_03_bp referes CollisionType_Enum
 create003_03_bp referes CoreUObject
 create003_03_bp referes CppTypes
@@ -1805,6 +1843,7 @@ ApplyHit_HitType referes ApplyHit_Base
 ApplyHit_HitType referes CoreUObject
 ApplyHit_HitType referes CppTypes
 ApplyHit_HitType referes Engine
+ApplyHit_HitType referes Game
 Door_On referes BasicTypes
 Door_On referes CoreUObject
 Door_On referes CppTypes
@@ -1858,15 +1897,18 @@ Drop_Coins referes Niagara
 SkillMove_RushToGoal referes BasicTypes
 SkillMove_RushToGoal referes CoreUObject
 SkillMove_RushToGoal referes CppTypes
+SkillMove_RushToGoal referes Engine
 SkillMove_RushToGoal referes Game
 AbnormalRender_EnergyRecover_Huge referes CoreUObject
 AbnormalRender_EnergyRecover_Huge referes Game
+DeadPerformance_BlueprintBase referes BasicTypes
 DeadPerformance_BlueprintBase referes CoreUObject
 DeadPerformance_BlueprintBase referes CppTypes
 DeadPerformance_BlueprintBase referes Game
 OnHurt_CauseDead referes CoreUObject
 OnHurt_CauseDead referes CppTypes
 OnHurt_CauseDead referes Engine
+OnHurt_CauseDead referes Game
 OnHurt_CauseDead referes OnHurt_Base
 BP_Sky_Sphere referes CoreUObject
 BP_Sky_Sphere referes CppTypes
@@ -1874,11 +1916,13 @@ BP_Sky_Sphere referes Engine
 OnHurt_HitType referes CoreUObject
 OnHurt_HitType referes CppTypes
 OnHurt_HitType referes Engine
+OnHurt_HitType referes Game
 OnHurt_HitType referes OnHurt_Base
 BP_Bunker_WaterTank referes BP_Bunker
 BP_Bunker_WaterTank referes CoreUObject
 BP_Bunker_WaterTank referes CppTypes
 BP_Bunker_WaterTank referes Engine
+BP_Bunker_WaterTank referes Game
 BP_Bunker_Fence03 referes BP_Bunker
 BP_Bunker_Fence03 referes CoreUObject
 BP_Bunker_Fence03 referes CppTypes
@@ -1938,6 +1982,7 @@ Explosive_Break referes ExplosiveBase
 uw_fight_reload referes CoreUObject
 uw_fight_reload referes Game
 uw_fight_reload referes UMG
+TaskDispatcher referes BasicTypes
 TaskDispatcher referes CoreUObject
 TaskDispatcher referes CppTypes
 TaskDispatcher referes Engine
@@ -1993,6 +2038,7 @@ BP_girl008_movement referes CoreUObject
 BP_girl008_movement referes CppTypes
 BP_girl008_movement referes DefaultPlayerMoveComponent
 BP_girl008_movement referes Engine
+BP_girl008_movement referes Game
 SelfCheck_OnSkillStart referes CoreUObject
 SelfCheck_OnSkillStart referes CppTypes
 SelfCheck_OnSkillStart referes Engine
@@ -2050,6 +2096,7 @@ uw_fight_npc_hp referes CoreUObject
 uw_fight_npc_hp referes CppTypes
 uw_fight_npc_hp referes Engine
 uw_fight_npc_hp referes Game
+uw_fight_npc_hp referes SlateCore
 uw_fight_npc_hp referes UMG
 BulletRecover referes BasicTypes
 BulletRecover referes BulletRecoverStruct
@@ -2110,6 +2157,7 @@ uw_fight_tips referes CoreUObject
 uw_fight_tips referes CppTypes
 uw_fight_tips referes Engine
 uw_fight_tips referes Game
+uw_fight_tips referes SlateCore
 uw_fight_tips referes UMG
 uw_fight_tips referes uw_fight_tipsgain
 uw_fight_tips referes uw_fight_tipskey
@@ -2117,6 +2165,7 @@ uw_fight_direction referes CoreUObject
 uw_fight_direction referes CppTypes
 uw_fight_direction referes Engine
 uw_fight_direction referes Game
+uw_fight_direction referes SlateCore
 uw_fight_direction referes UMG
 uw_fight_reload_button referes CoreUObject
 uw_fight_reload_button referes Game
@@ -2142,6 +2191,7 @@ e_ui_fighttips_02_p referes Game
 en000_01_bp referes CoreUObject
 en000_01_bp referes CppTypes
 en000_01_bp referes Engine
+uw_fight_injured_subitem2 referes BasicTypes
 uw_fight_injured_subitem2 referes CoreUObject
 uw_fight_injured_subitem2 referes CppTypes
 uw_fight_injured_subitem2 referes Engine
@@ -2157,7 +2207,9 @@ uw_fight_cross3 referes CoreUObject
 uw_fight_cross3 referes CppTypes
 uw_fight_cross3 referes Engine
 uw_fight_cross3 referes Game
+uw_fight_cross3 referes SlateCore
 uw_fight_cross3 referes UMG
+DefaultCharacterStateMachine referes BasicTypes
 DefaultCharacterStateMachine referes CoreUObject
 DefaultCharacterStateMachine referes CppTypes
 DefaultCharacterStateMachine referes Engine
@@ -2196,6 +2248,7 @@ KillZone referes Game
 SMC_BaseMonster referes CoreUObject
 SMC_BaseMonster referes CppTypes
 SMC_BaseMonster referes Engine
+SMC_BaseMonster referes Game
 SMC_BaseMonster referes SMSystem
 NavQueryFilter_PathLine referes CoreUObject
 NavQueryFilter_PathLine referes NavigationSystem
@@ -2207,6 +2260,7 @@ Drop_Disc referes Niagara
 uw_fight_button_base referes CoreUObject
 uw_fight_button_base referes CppTypes
 uw_fight_button_base referes Engine
+uw_fight_button_base referes SlateCore
 uw_fight_button_base referes UMG
 NavArea_PathMain referes CoreUObject
 NavArea_PathMain referes NavigationSystem
@@ -2229,6 +2283,7 @@ uw_fight_plm_frame referes CoreUObject
 uw_fight_plm_frame referes CppTypes
 uw_fight_plm_frame referes Engine
 uw_fight_plm_frame referes Game
+uw_fight_plm_frame referes SlateCore
 uw_fight_plm_frame referes UMG
 Half_Climb referes BP_Blindage
 Half_Climb referes CoreUObject
@@ -2421,10 +2476,13 @@ uw_fight_crosshair_base referes CoreUObject
 uw_fight_crosshair_base referes CppTypes
 uw_fight_crosshair_base referes Engine
 uw_fight_crosshair_base referes Game
+uw_fight_crosshair_base referes SlateCore
+DeadPerformance_Common referes BasicTypes
 DeadPerformance_Common referes CoreUObject
 DeadPerformance_Common referes CppTypes
 DeadPerformance_Common referes DeadPerformance_BlueprintBase
 DeadPerformance_Common referes Engine
+DeadPerformance_Common referes Game
 LocomotionAnimBP referes AnimGraphRuntime
 LocomotionAnimBP referes CoreUObject
 LocomotionAnimBP referes CppTypes
@@ -2510,6 +2568,7 @@ uw_fight_boss_hp referes CoreUObject
 uw_fight_boss_hp referes CppTypes
 uw_fight_boss_hp referes Engine
 uw_fight_boss_hp referes Game
+uw_fight_boss_hp referes SlateCore
 uw_fight_boss_hp referes UMG
 Mon004_BonePartitionData referes CoreUObject
 Mon004_BonePartitionData referes Game
@@ -2547,6 +2606,7 @@ uw_fight_cross5 referes CoreUObject
 uw_fight_cross5 referes CppTypes
 uw_fight_cross5 referes Engine
 uw_fight_cross5 referes Game
+uw_fight_cross5 referes SlateCore
 uw_fight_cross5 referes UMG
 uw_fight_collimation referes CoreUObject
 uw_fight_collimation referes CppTypes
@@ -2558,6 +2618,7 @@ uw_test_boss203_break_progress referes CoreUObject
 uw_test_boss203_break_progress referes CppTypes
 uw_test_boss203_break_progress referes Engine
 uw_test_boss203_break_progress referes Game
+uw_test_boss203_break_progress referes SlateCore
 uw_test_boss203_break_progress referes UMG
 uw_fight_time referes CoreUObject
 uw_fight_time referes Game
@@ -2615,6 +2676,7 @@ uw_fight_level_task_btn referes CoreUObject
 uw_fight_level_task_btn referes CppTypes
 uw_fight_level_task_btn referes Game
 uw_fight_level_task_btn referes UMG
+uw_fight_direction_dialogue referes BasicTypes
 uw_fight_direction_dialogue referes CoreUObject
 uw_fight_direction_dialogue referes CppTypes
 uw_fight_direction_dialogue referes Engine
@@ -2714,6 +2776,7 @@ uw_fight_aim_button referes CoreUObject
 uw_fight_aim_button referes CppTypes
 uw_fight_aim_button referes Engine
 uw_fight_aim_button referes Game
+uw_fight_aim_button referes SlateCore
 uw_fight_aim_button referes UMG
 uw_fight_aim_button referes uw_fight_skill_keybtn
 uw_fight_action2 referes BasicTypes
@@ -2745,6 +2808,7 @@ uw_fight_skill03_button_pc referes UMG
 uw_fight_skill03_button_pc referes e_ui_fightpower_01_p
 uw_fight_skill03_button_pc referes e_ui_fightstrong_03_p
 uw_fight_skill03_button_pc referes uw_fight_skill_keybtn
+uw_fight_player_item_skill03_pc referes BasicTypes
 uw_fight_player_item_skill03_pc referes CoreUObject
 uw_fight_player_item_skill03_pc referes CppTypes
 uw_fight_player_item_skill03_pc referes Engine
@@ -2767,6 +2831,7 @@ uw_fight_player_item_pc referes uw_fight_playercd
 uw_fight_player_item_pc referes uw_fight_skill_keybtn
 ABP_Mon_004_Post referes ABP_PostProcessAnim
 ABP_Mon_004_Post referes CoreUObject
+uw_fight_crossstrong referes BasicTypes
 uw_fight_crossstrong referes CoreUObject
 uw_fight_crossstrong referes CppTypes
 uw_fight_crossstrong referes Engine
@@ -2837,12 +2902,14 @@ uw_fight_grenade_tips referes CoreUObject
 uw_fight_grenade_tips referes CppTypes
 uw_fight_grenade_tips referes Engine
 uw_fight_grenade_tips referes Game
+uw_fight_grenade_tips referes SlateCore
 uw_fight_grenade_tips referes UMG
 uw_armor_subitem2 referes CoreUObject
 uw_armor_subitem2 referes CppTypes
 uw_armor_subitem2 referes Engine
 uw_armor_subitem2 referes Game
 uw_armor_subitem2 referes UMG
+uw_fight_injured_subitem referes BasicTypes
 uw_fight_injured_subitem referes CoreUObject
 uw_fight_injured_subitem referes CppTypes
 uw_fight_injured_subitem referes Engine
@@ -2871,6 +2938,7 @@ umg_fight referes CoreUObject
 umg_fight referes CppTypes
 umg_fight referes Engine
 umg_fight referes Game
+umg_fight referes SlateCore
 umg_fight referes UMG
 umg_fight referes umg_camerasetting
 umg_fight referes uw_fight_MonBloodbar
@@ -2924,6 +2992,7 @@ uw_fight_level_task_list_item_pc referes Engine
 uw_fight_level_task_list_item_pc referes Game
 uw_fight_level_task_list_item_pc referes UMG
 uw_fight_level_task_list_item_pc referes VaTexAtlasPlugin
+uw_fight_danger_warning referes BasicTypes
 uw_fight_danger_warning referes CoreUObject
 uw_fight_danger_warning referes CppTypes
 uw_fight_danger_warning referes Engine
@@ -3053,11 +3122,13 @@ uw_fight_mla_frame referes CoreUObject
 uw_fight_mla_frame referes CppTypes
 uw_fight_mla_frame referes Engine
 uw_fight_mla_frame referes Game
+uw_fight_mla_frame referes SlateCore
 uw_fight_mla_frame referes UMG
 uw_fight_cross7 referes CoreUObject
 uw_fight_cross7 referes CppTypes
 uw_fight_cross7 referes Engine
 uw_fight_cross7 referes Game
+uw_fight_cross7 referes SlateCore
 uw_fight_cross7 referes UMG
 uw_fight_direction_revive referes CoreUObject
 uw_fight_direction_revive referes CppTypes
@@ -3068,11 +3139,13 @@ uw_fight_cross2 referes CoreUObject
 uw_fight_cross2 referes CppTypes
 uw_fight_cross2 referes Engine
 uw_fight_cross2 referes Game
+uw_fight_cross2 referes SlateCore
 uw_fight_cross2 referes UMG
 uw_fight_cross referes CoreUObject
 uw_fight_cross referes CppTypes
 uw_fight_cross referes Engine
 uw_fight_cross referes Game
+uw_fight_cross referes SlateCore
 uw_fight_cross referes UMG
 uw_task_target_progress referes BasicTypes
 uw_task_target_progress referes CoreUObject
@@ -3122,6 +3195,7 @@ uw_fight_joystick_cover referes CoreUObject
 uw_fight_joystick_cover referes CppTypes
 uw_fight_joystick_cover referes Engine
 uw_fight_joystick_cover referes Game
+uw_fight_joystick_cover referes SlateCore
 uw_fight_joystick_cover referes UMG
 uw_fight_direction_retreat referes CoreUObject
 uw_fight_direction_retreat referes CppTypes
@@ -3136,6 +3210,7 @@ uw_fight_direction_friend referes UMG
 AICondition_GetHasSkillToken_Melee referes CoreUObject
 AICondition_GetHasSkillToken_Melee referes CppTypes
 AICondition_GetHasSkillToken_Melee referes Game
+uw_fight_direction_defense referes BasicTypes
 uw_fight_direction_defense referes CoreUObject
 uw_fight_direction_defense referes CppTypes
 uw_fight_direction_defense referes Engine
@@ -3200,26 +3275,31 @@ BP_BlintageHint referes CppTypes
 BP_BlintageHint referes Engine
 BP_BlintageHint referes Niagara
 BP_BlintageHint referes uw_fight_interactitem
+uw_fight_direction_servant referes BasicTypes
 uw_fight_direction_servant referes CoreUObject
 uw_fight_direction_servant referes CppTypes
 uw_fight_direction_servant referes Engine
 uw_fight_direction_servant referes Game
 uw_fight_direction_servant referes UMG
+uw_fight_direction_common referes BasicTypes
 uw_fight_direction_common referes CoreUObject
 uw_fight_direction_common referes CppTypes
 uw_fight_direction_common referes Engine
 uw_fight_direction_common referes Game
 uw_fight_direction_common referes UMG
+uw_fight_player_pc referes BasicTypes
 uw_fight_player_pc referes CoreUObject
 uw_fight_player_pc referes CppTypes
 uw_fight_player_pc referes Engine
 uw_fight_player_pc referes Game
 uw_fight_player_pc referes UMG
 uw_fight_player_pc referes uw_fight_player_item_pc
+Panel_Monster_Buff referes BasicTypes
 Panel_Monster_Buff referes CoreUObject
 Panel_Monster_Buff referes CppTypes
 Panel_Monster_Buff referes Engine
 Panel_Monster_Buff referes Game
+Panel_Monster_Buff referes SlateCore
 Panel_Monster_Buff referes UMG
 BP_UMGMaterialLibrary referes CoreUObject
 BP_UMGMaterialLibrary referes CppTypes
@@ -3232,6 +3312,7 @@ uw_fight_scene_off referes CoreUObject
 uw_fight_scene_off referes CppTypes
 uw_fight_scene_off referes Engine
 uw_fight_scene_off referes Game
+uw_fight_scene_off referes SlateCore
 uw_fight_scene_off referes UMG
 TimerExecute referes BasicTypes
 TimerExecute referes CoreUObject
@@ -3301,6 +3382,7 @@ uw_fight_cross6 referes CoreUObject
 uw_fight_cross6 referes CppTypes
 uw_fight_cross6 referes Engine
 uw_fight_cross6 referes Game
+uw_fight_cross6 referes SlateCore
 uw_fight_cross6 referes UMG
 uw_fight_propitem referes BasicTypes
 uw_fight_propitem referes CoreUObject
@@ -3308,6 +3390,7 @@ uw_fight_propitem referes CppTypes
 uw_fight_propitem referes Engine
 uw_fight_propitem referes Game
 uw_fight_propitem referes UMG
+uw_fight_direction_threat referes BasicTypes
 uw_fight_direction_threat referes CoreUObject
 uw_fight_direction_threat referes CppTypes
 uw_fight_direction_threat referes Engine
@@ -3327,6 +3410,7 @@ uw_fight_scene_on referes CoreUObject
 uw_fight_scene_on referes CppTypes
 uw_fight_scene_on referes Engine
 uw_fight_scene_on referes Game
+uw_fight_scene_on referes SlateCore
 uw_fight_scene_on referes UMG
 uw_fight_scene_on referes fight_scene
 AICondition_IsInBunkerArea referes CoreUObject
