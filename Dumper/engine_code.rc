@@ -18,3 +18,4 @@ COREUOBJECT_CPP TEXTFILE "engine_code\\CoreUObject_Package.cpp"
 
 BASICTYPES_CPP TEXTFILE "engine_code\\BasicTypes_Package.cpp"
 
+COREUOBJECT_PARAM TEXTFILE "engine_code\\CoreUObject_Params.h"

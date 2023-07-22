@@ -34,3 +34,5 @@
 
 #define BASICTYPES_CPP 246
 
+#define COREUOBJECT_PARAM 245
+

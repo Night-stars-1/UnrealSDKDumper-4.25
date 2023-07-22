@@ -18,4 +18,5 @@ namespace VAR_NAMESPACE
 
 #include "CoreUObject_Structs.h"
 #include "CoreUObject_Classes.h"
+#include "CoreUObject_Params.h"
 
