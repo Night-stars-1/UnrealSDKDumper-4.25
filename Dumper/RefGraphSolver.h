@@ -295,6 +295,7 @@ class RefGraphSolver
           if (typeDefMap.count(purename) == 0) {
             function.RetType = "void";
             function.CppName = "void " + function.FuncName;
+            function.paramInfo.clear();
           }
           else {
             refTypes.insert(purename);
