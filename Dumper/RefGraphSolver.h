@@ -282,7 +282,7 @@ class RefGraphSolver
             }
           }
           if (!should_fix && ignoreTemplateRef && CanIgnoreRef(purename)) {
-            continue;
+            goto paramProcess;
           }
           if(!should_fix)
             for (auto& tname : genericTypes) {
@@ -301,6 +301,7 @@ class RefGraphSolver
             refTypes.insert(purename);
           }
         }
+        paramProcess:;
         // 处理参数
         for (auto paramtype : function.ParamTypes) {
           auto purename = GetPureTypeName(paramtype);
