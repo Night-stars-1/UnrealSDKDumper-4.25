@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "wrappers.h"
 #include "ClassSizeFixer.h"
+#include "EngineHeaderExport.h"
 
 std::pair<bool, uint16> UE_FNameEntry::Info() const {
   auto info = Read<uint16>(object + offsets.FNameEntry.Info);
@@ -251,6 +252,11 @@ UE_UClass UE_UStruct::StaticClass() {
 
 uint64 UE_UFunction::GetFunc() const {
   return Read<uint64>(object + offsets.UFunction.Func);
+}
+
+uint32 UE_UFunction::GetFunctionFlagInt() const {
+  auto flags = Read<uint32>(object + offsets.UFunction.FunctionFlags);
+  return flags;
 }
 
 std::string UE_UFunction::GetFunctionFlags() const {
@@ -1044,11 +1050,15 @@ void UE_UPackage::FillPadding(UE_UStruct object, std::vector<Member>& members, u
 void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out, std::unordered_map<std::string, int>& memberMap) {
   out->FullName = ProcessUTF8Char(fn.GetFullName());
   out->Flags = fn.GetFunctionFlags();
+  out->FuncFlag = fn.GetFunctionFlagInt();
   out->Func = fn.GetFunc();
   out->FuncName = fn.GetName();
   out->FuncName = GetValidClassName(ProcessUTF8Char(out->FuncName));
   if(memberMap.count(out->FuncName) > 0) {
     out->FuncName += fmt::format("_{}", ++memberMap[out->FuncName]);
+  }
+  if (out->FuncFlag & FUNC_Static) {
+    out->FuncName = "STATIC_" + out->FuncName;
   }
 
   std::unordered_map<std::string, int> paramCntMp;
@@ -1601,6 +1611,63 @@ void UE_UPackage::SavePackageHeader(bool hasClassHeader, bool hasStructHeader, F
   }
 }
 
+void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
+  struct ParamStruct {
+    std::string paramName;
+    std::string funcName;
+  };
+  struct FunctionHeader {
+    uint32 RVA;
+    std::string name;
+    std::vector<std::string> flags;
+  };
+  std::string gameInfo = "/**\n * Name: VAR_GAME_NAME\n * Version : VAR_GAME_VERSION\n */ \n";
+  EngineHeaderExport::ReplaceVAR(gameInfo);
+  fmt::print(cppFile, "{}", gameInfo);
+  fmt::print(paramFile, "{}", gameInfo);
+  fmt::print(cppFile, "#include \"../SDK.h\"");
+  fmt::print(cppFile, "\n\nnamespace {}\n{{\n", GNameSpace);
+  auto GenerateFunctionHeader = [](FILE* file, FunctionHeader &header) {
+    fmt::print(file, "\t/**\n");
+    fmt::print(file, "\t * Function: \n");
+    fmt::print(file, "\t * \tRVA: {:#08X}\n", header.RVA);
+    fmt::print(file, "\t * \tName: {}\n", header.name);
+    std::string flags = "(";
+    for (int i = 0; i < header.flags.size(); i++) {
+      if (i != 0) {
+        flags += ", " + header.flags[i];
+      }
+      else {
+        flags += header.flags[i];
+      }
+    }
+    flags += ")";
+    fmt::print(file, "\t * \tFlags: {}\n", flags);
+    fmt::print(file, "\t */\n");
+  };
+  auto GenerateStaticClass = [&GenerateFunctionHeader](FILE* file, Struct& stru) {
+    FunctionHeader header;
+    header.RVA = 0;
+    header.name = fmt::format("PredefinedFunction {}.StaticClass", GetValidClassName(stru.ClassName));
+    header.flags.push_back("Predefined");
+    header.flags.push_back("Static");
+    GenerateFunctionHeader(file, header);
+    fmt::print(file, "\tUClass* {}::StaticClass()\n\t{{\n", GetValidClassName(stru.ClassName));
+    fmt::print(file, "\t\tstatic UClass* ptr = nullptr;\n");
+    fmt::print(file, "\t\tif (!ptr)\n");
+    fmt::print(file, "\t\t\tptr = UObject::FindClass(\"{}\");\n", stru.FullName);
+    fmt::print(file, "\t\treturn ptr;\n");
+    fmt::print(file, "\t}}\n\n");
+  };
+  for (Struct& stru : this->Structures) {
+    GenerateStaticClass(cppFile, stru);
+  }
+  for (Struct& stru : this->Classes) {
+    GenerateStaticClass(cppFile, stru);
+  }
+  fmt::print(cppFile, "}}");
+}
+
 bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
   if (!(Classes.size() || Structures.size() || Enums.size())) {
     return false;
@@ -1657,8 +1724,17 @@ bool UE_UPackage::Save(const fs::path &dir, bool spacing) {
     UE_UPackage::AddNamespaceDef(file, 2);
     UE_UPackage::AddAlignDef(file, 2);
   }
-  File file(dir / (packageName + "_package.h"), "w");
-  UE_UPackage::SavePackageHeader(hasClassHeader, hasStructHeader, file);
+  {
+    // 导出package对应的头文件
+    File file(dir / (packageName + "_package.h"), "w");
+    UE_UPackage::SavePackageHeader(hasClassHeader, hasStructHeader, file);
+  }
+  {
+    // 导出代理用函数的cpp文件
+    File cpp(dir / (packageName + "_package.cpp"), "w");
+    File param(dir / (packageName + "_param.h"), "w");
+    UE_UPackage::SavePackageCpp(cpp, param);
+  }
 
   return true;
 }

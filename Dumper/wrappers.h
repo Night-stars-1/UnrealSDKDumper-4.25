@@ -233,6 +233,7 @@ class UE_UFunction : public UE_UStruct {
 public:
   using UE_UStruct::UE_UStruct;
   uint64 GetFunc() const;
+  uint32 GetFunctionFlagInt() const;
   std::string GetFunctionFlags() const;
   static UE_UClass StaticClass();
 };
@@ -585,6 +586,7 @@ private:
   };
   struct Function {
     std::vector<std::string> ParamTypes;
+    uint32 FuncFlag;
     std::string FuncName;
     std::string RetType;
     std::string FullName;
@@ -640,6 +642,7 @@ public:
   static void AddAlignDef(FILE* file, int type);
   static void AddNamespaceDef(FILE* file, int type);
   void SavePackageHeader(bool hasClassHeader, bool hasStructHeader, FILE* file);
+  void SavePackageCpp(FILE* cppFile, FILE* paramFile);
   bool Save(const fs::path& dir, bool spacing);
   UE_UObject GetObject() const;
 
