@@ -1,0 +1,32 @@
+name: UnrealSDKDumper
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  release:
+    types: released
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Build UnrealSDKDumper x64
+        shell: pwsh
+        run: |
+          .\build.ps1 x64
+          New-Item -ItemType Directory -Path C:\UnrealSDKDumper -Force > $null
+          Compress-Archive -Path bin\Release\* -DestinationPath C:\UnrealSDKDumper\UnrealSDKDumper_x64.zip
+      - uses: actions/upload-artifact@v2
+        with:
+          name: 'UnrealSDKDumper_x64'
+          path: 'C:\UnrealSDKDumper\UnrealSDKDumper_x64.zip'
+          if-no-files-found: error
