@@ -1285,7 +1285,9 @@ std::string UE_UPackage::GetCpp_xString(std::string& input) {
 }
 
 std::string UE_UPackage::GetValidClassName(std::string str) {
-
+  if(str[0] >= '0' && str[0] <= '9') {
+    str = "_" + str;
+  }
   // step1: Ìæ»»·Ç·¨µÄ×Ö·û
   char chars[] = " /\\:*?\"<>|+().&-=![]{}\'";
   for (auto c : chars) {
