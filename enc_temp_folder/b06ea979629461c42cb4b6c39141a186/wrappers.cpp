@@ -1884,7 +1884,7 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
       fmt::print(file, "\t\tfn->FunctionFlags |= 0x00000400;\n");
     }
     fmt::print(file, "\t\tUObject::ProcessEvent(fn, &params);\n");
-    fmt::print(file, "\t\tfn->FunctionFlags = flags;\n\n");
+    fmt::print(file, "\t\tfn->FunctionFlags = flags;\n");
 
     for (auto& param : func.paramInfo) {
       if (param.Type[param.Type.size() - 1] == '&') {
