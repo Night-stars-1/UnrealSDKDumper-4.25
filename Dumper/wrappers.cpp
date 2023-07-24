@@ -1793,7 +1793,7 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
     fmt::print(file, "\tUClass* {}::StaticClass()\n\t{{\n", GetValidClassName(stru.ClassName));
     fmt::print(file, "\t\tstatic UClass* ptr = nullptr;\n");
     fmt::print(file, "\t\tif (!ptr)\n");
-    fmt::print(file, "\t\t\tptr = UObject::FindClass(\"{}\");\n", stru.FullName);
+    fmt::print(file, "\t\t\tptr = UObject::FindClass(\"{}\");\n", GetCpp_xString(stru.FullName));
     fmt::print(file, "\t\treturn ptr;\n");
     fmt::print(file, "\t}}\n\n");
   };
