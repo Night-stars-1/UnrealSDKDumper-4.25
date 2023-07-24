@@ -603,6 +603,7 @@ private:
     std::string Flags;
     std::string GeneratedParamName;
     uint64 Func = 0;
+    bool badDeclareFunc = false;
   };
   struct Struct {
     std::string FullName;
@@ -638,6 +639,7 @@ private:
   static void GenerateFunction(UE_UFunction fn, Function* out, std::unordered_map<std::string, int>& memberMap);
   // static void GenerateFunction(UE_UFunction fn, Function* out);
   static std::string ProcessUTF8Char(std::string input);
+  static std::string GetCpp_xString(std::string& input);
   static std::string GetValidClassName(std::string str);
   static void GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bool findPointers);
   static void FixKeywordConflict(std::string& tocheck);

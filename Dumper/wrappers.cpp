@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 #include <hash/hash.h>
 #include <algorithm>
+#include <sstream>
 #include "engine.h"
 #include "memory.h"
 #include "wrappers.h"
@@ -259,6 +260,106 @@ uint64 UE_UFunction::GetFunc() const {
 uint32 UE_UFunction::GetFunctionFlagInt() const {
   auto flags = Read<uint32>(object + offsets.UFunction.FunctionFlags);
   return flags;
+}
+
+void GetFlagOutVector(uint32 flag, std::vector<std::string>& out) {
+  auto flags = flag;
+  if (flags == FUNC_None) {
+    out.push_back("None");
+    return;
+  }
+  else {
+    if (flags & FUNC_Final) {
+      out.push_back("Final");
+    }
+    if (flags & FUNC_RequiredAPI) {
+      out.push_back("RequiredAPI");
+    }
+    if (flags & FUNC_BlueprintAuthorityOnly) {
+      out.push_back("BlueprintAuthorityOnly");
+    }
+    if (flags & FUNC_BlueprintCosmetic) {
+      out.push_back("BlueprintCosmetic");
+    }
+    if (flags & FUNC_Net) {
+      out.push_back("Net");
+    }
+    if (flags & FUNC_NetReliable) {
+      out.push_back("NetReliable");
+    }
+    if (flags & FUNC_NetRequest) {
+      out.push_back("NetRequest");
+    }
+    if (flags & FUNC_Exec) {
+      out.push_back("Exec");
+    }
+    if (flags & FUNC_Native) {
+      out.push_back("Native");
+    }
+    if (flags & FUNC_Event) {
+      out.push_back("Event");
+    }
+    if (flags & FUNC_NetResponse) {
+      out.push_back("NetResponse");
+    }
+    if (flags & FUNC_Static) {
+      out.push_back("Static");
+    }
+    if (flags & FUNC_NetMulticast) {
+      out.push_back("NetMulticast");
+    }
+    if (flags & FUNC_UbergraphFunction) {
+      out.push_back("UbergraphFunction");
+    }
+    if (flags & FUNC_MulticastDelegate) {
+      out.push_back("MulticastDelegate");
+    }
+    if (flags & FUNC_Public) {
+      out.push_back("Public");
+    }
+    if (flags & FUNC_Private) {
+      out.push_back("Private");
+    }
+    if (flags & FUNC_Protected) {
+      out.push_back("Protected");
+    }
+    if (flags & FUNC_Delegate) {
+      out.push_back("Delegate");
+    }
+    if (flags & FUNC_NetServer) {
+      out.push_back("NetServer");
+    }
+    if (flags & FUNC_HasOutParms) {
+      out.push_back("HasOutParms");
+    }
+    if (flags & FUNC_HasDefaults) {
+      out.push_back("HasDefaults");
+    }
+    if (flags & FUNC_NetClient) {
+      out.push_back("NetClient");
+    }
+    if (flags & FUNC_DLLImport) {
+      out.push_back("DLLImport");
+    }
+    if (flags & FUNC_BlueprintCallable) {
+      out.push_back("BlueprintCallable");
+    }
+    if (flags & FUNC_BlueprintEvent) {
+      out.push_back("BlueprintEvent");
+    }
+    if (flags & FUNC_BlueprintPure) {
+      out.push_back("BlueprintPure");
+    }
+    if (flags & FUNC_EditorOnly) {
+      out.push_back("EditorOnly");
+    }
+    if (flags & FUNC_Const) {
+      out.push_back("Const");
+    }
+    if (flags & FUNC_NetValidate) {
+      out.push_back("NetValidate");
+    }
+  }
 }
 
 std::string UE_UFunction::GetFunctionFlags() const {
@@ -1134,6 +1235,12 @@ void UE_UPackage::GenerateFunction(UE_UFunction fn, Function *out, std::unordere
   }
 }
 
+std::string to_hex_string(int value) {
+  std::stringstream stream;
+  stream << std::setfill('0') << std::setw(2) << std::hex << value;
+  return stream.str();
+}
+
 std::string UE_UPackage::ProcessUTF8Char(std::string input) {
   // 移除空字符
   std::string tmp;
@@ -1163,8 +1270,16 @@ std::string UE_UPackage::ProcessUTF8Char(std::string input) {
     }
     else {
       // Not a valid UTF-8 character, replace with byte code
-      result += "_x" + std::to_string(static_cast<unsigned char>(ch));
+      result += "_x" + to_hex_string(static_cast<unsigned char>(ch));
     }
+  }
+  return result;
+}
+
+std::string UE_UPackage::GetCpp_xString(std::string& input) {
+  std::string result = "";
+  for (char& c : input) {
+    result += "\\x" + to_hex_string(static_cast<unsigned char>(c));
   }
   return result;
 }
@@ -1731,8 +1846,40 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
     }
     fmt::print(file, "\n\t}};\n\n");
   };
-  auto GenerateProxyFunctionBody = []() {
+  auto GenerateProxyFunctionBody = [&GenerateFunctionHeader](FILE* file, Function& func, Struct& stru) {
     // 生成函数体
+    if (func.FuncName == "StaticClass") return;
+    FunctionHeader header;
+    header.RVA = func.Func - Base;
+    header.name = ProcessUTF8Char(func.FullName);
+    GetFlagOutVector(func.FuncFlag, header.flags);
+    GenerateFunctionHeader(file, header);
+    std::string ProcessedFullName = GetCpp_xString(func.FullName);
+    fmt::print(file, "\t{} {}::{}({})\n\t{{\n", func.RetType, GetValidClassName(stru.ClassName), func.FuncName, func.Params);
+    fmt::print(file, "\t\tstatic UFunction* fn = nullptr;\n");
+    fmt::print(file, "\t\tif (!fn)\n");
+    fmt::print(file, "\t\t\tfn = UObject::FindObject<UFunction>(\"{}\");\n", ProcessedFullName);
+    fmt::print(file, "\t\t{} params {{ }};\n", func.GeneratedParamName);
+    for (auto& param : func.paramInfo) {
+      if (param.Name == "ReturnValue") continue;
+      fmt::print(file, "\t\tparams.{} = {};\n", param.Name, param.Name);
+    }
+    fmt::print(file, "\n\t\tauto flags = fn->FunctionFlags;\n");
+    if (func.FuncFlag & FUNC_Native) {
+      fmt::print(file, "\t\tfn->FunctionFlags |= 0x00000400;\n");
+    }
+    fmt::print(file, "\t\tUObject::ProcessEvent(fn, &params);\n");
+    fmt::print(file, "\t\tfn->FunctionFlags = flags;\n");
+    if (func.RetType != "void") {
+      if (func.badDeclareFunc) {
+        fmt::print(file, "\t\treturn {{ }};  // BAD DECLARE FUNCTION!\n");
+      }
+      else {
+        fmt::print(file, "\t\treturn params.ReturnValue;\n");
+      }
+      
+    }
+    fmt::print(file, "\t}}\n");
   };
   for (auto& stru : this->Structures) {
     GenerateStaticClass(cppFile, stru);
@@ -1744,11 +1891,13 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
   for (auto& stru : this->Structures) {
     for (auto& func : stru.Functions) {
       GenerateProxyFunctionParamStruct(paramFile, func);
+      GenerateProxyFunctionBody(cppFile, func, stru);
     }
   }
   for (auto& stru : this->Classes) {
     for (auto& func : stru.Functions) {
       GenerateProxyFunctionParamStruct(paramFile, func);
+      GenerateProxyFunctionBody(cppFile, func, stru);
     }
   }
 

@@ -316,6 +316,7 @@ class RefGraphSolver
                 function.Params = "/*" + function.Params + "*/";
                 function.paramInfo.clear();
                 function.ParamTypes.clear();
+                function.badDeclareFunc = true;
                 goto end;
               }
             }
@@ -334,6 +335,7 @@ class RefGraphSolver
               function.Params = "/*" + function.Params + "*/";
               function.paramInfo.clear();
               function.ParamTypes.clear();
+              function.badDeclareFunc = true;
               goto end;
             }
             else {
