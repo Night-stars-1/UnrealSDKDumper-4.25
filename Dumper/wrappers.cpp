@@ -1232,7 +1232,7 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
   auto super = object.GetSuper();
   
   if (super) {
-    s.CppName += " : public " + super.GetCppName();
+    s.CppName += " : public " + s.SuperName;
     //s.Inherited = super.GetSize();
     s.Inherited = ClassSizeFixer::sizeMp[super.GetAddress()];
   }
