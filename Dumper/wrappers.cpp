@@ -1172,7 +1172,7 @@ std::string UE_UPackage::ProcessUTF8Char(std::string input) {
 std::string UE_UPackage::GetValidClassName(std::string str) {
 
   // step1: Ìæ»»·Ç·¨µÄ×Ö·û
-  char chars[] = " /\\:*?\"<>|+().&-";
+  char chars[] = " /\\:*?\"<>|+().&-=![]{}\'";
   for (auto c : chars) {
     size_t pos = str.find(c);
     while (pos != std::string::npos) {
