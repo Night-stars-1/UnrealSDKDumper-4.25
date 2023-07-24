@@ -8,9 +8,9 @@ Write-Host "VisualStudioCompiler:" + $msbuildPath
 $env:PATH = $msbuildPath + ';' + $env:PATH
 
 if($build86){
-    msbuild Dumper/Dumper.vcxproj /p:Platform=x86 /p:Configuration=Release
+    msbuild UnrealDumper.sln -target:Dumper /p:Platform=x86 /p:Configuration=Release
 }
 
 if($build64){
-    msbuild Dumper/Dumper.vcxproj /p:Platform=x64 /p:Configuration=Release
+    msbuild UnrealDumper.sln -target:Dumper /p:Platform=x64 /p:Configuration=Release
 }
