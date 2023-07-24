@@ -1572,6 +1572,8 @@ void UE_UPackage::FixKeywordConflict(std::string& tocheck) {
     "IGNORE",
     "ABSOLUTE",
     "RELATIVE",
+    "DEBUG",
+    "RELEASE"
   };
   for (auto& keyword : cppKeyword) {
     if (tocheck == keyword) {
