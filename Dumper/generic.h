@@ -1,6 +1,8 @@
 #pragma once
 #include "defs.h"
 #include <functional>
+#include <string>
+#include <string_view>
 
 struct TArray {
   uint8* Data;
