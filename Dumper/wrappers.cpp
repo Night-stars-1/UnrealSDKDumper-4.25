@@ -1227,7 +1227,7 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
     s.CppName = "struct " + GetValidClassName(s.ClassName);
   }
   
-  s.SuperName = object.GetSuper().GetCppName();
+  s.SuperName = GetValidClassName(object.GetSuper().GetCppName());
 
   auto super = object.GetSuper();
   
