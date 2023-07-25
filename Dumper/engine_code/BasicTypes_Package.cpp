@@ -293,6 +293,32 @@ namespace VAR_NAMESPACE
 		throw std::exception("This game doesn't use 'FNAME_POOL_WITH_CASE_PRESERVING_NAME' so 'ComparisonId' not stored in 'FNameEntry'");
 	}
 
+	std::string WideStringToUTF8(const wchar_t* wideString)
+	{
+		if (wideString == nullptr)
+			return "";
+
+		// 获取转换后的字符串长度（包括终止null字符）
+		int utf8Length = WideCharToMultiByte(CP_UTF8, 0, wideString, -1, nullptr, 0, nullptr, nullptr);
+
+		if (utf8Length == 0)
+			return "";
+
+		// 分配内存来保存转换后的UTF-8字符串
+		char* utf8Buffer = new char[utf8Length];
+
+		// 进行实际的转换
+		WideCharToMultiByte(CP_UTF8, 0, wideString, -1, utf8Buffer, utf8Length, nullptr, nullptr);
+
+		// 创建std::string并将转换后的UTF-8数据拷贝进去
+		std::string utf8String(utf8Buffer);
+
+		// 释放内存
+		delete[] utf8Buffer;
+
+		return utf8String;
+	}
+
 	/**
 	 * Function:
 	 * 		RVA    -> 0x00000000
@@ -303,6 +329,20 @@ namespace VAR_NAMESPACE
 	{
 		uint32_t len = GetLength();
 		if (len > 1024) return "[Error: Overflow]";
+		if (IsWide()) {
+			wchar_t wbuf[1024]{};
+			for (int i = 0; i < len; i++) {
+				wbuf[i] = WideName[i];
+			}
+			return WideStringToUTF8(wbuf);
+		}
+		else {
+			char buf[1024]{};
+			for (int i = 0; i < len; i++) {
+				buf[i] = AnsiName[i];
+			}
+			return std::string(buf);
+		}
 		return std::string((const char*)AnsiName, len);
 	}
 
