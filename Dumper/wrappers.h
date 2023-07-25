@@ -43,6 +43,8 @@ public:
   // Gets string out of array unit
   void String(char *buf, bool wide, uint16 len) const;
   std::string String() const;
+  static std::string WideStringToUTF8(const wchar_t* wideString);
+
   // Calculates the unit size depending on 'offsets.FNameEntry' and information
   // about string
   static uint16 Size(bool wide, uint16 len);

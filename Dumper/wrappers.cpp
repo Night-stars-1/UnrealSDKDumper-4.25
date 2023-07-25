@@ -19,26 +19,51 @@ std::pair<bool, uint16> UE_FNameEntry::Info() const {
 }
 
 std::string UE_FNameEntry::String(bool wide, uint16 len) const {
-  std::string name("\x0", len);
-  String(name.data(), wide, len);
-  return name;
-}
-
-void UE_FNameEntry::String(char *buf, bool wide, uint16 len) const {
   if (wide) {
     wchar_t wbuf[1024]{};
     Read(object + offsets.FNameEntry.HeaderSize, wbuf, len * 2ull);
-    /*if (Decrypt_WIDE) { Decrypt_WIDE(wbuf, len); }*/
-    auto copied = WideCharToMultiByte(CP_UTF8, 0, wbuf, len, buf, len, 0, 0);
-    if (copied == 0) {
-      buf[0] = '\x0';
-    }
-  } else {
+    return WideStringToUTF8(wbuf);
+  }
+  else {
+    char buf[1024]{};
     Read(object + offsets.FNameEntry.HeaderSize, buf, len);
     if (Decrypt_ANSI) {
       Decrypt_ANSI(buf, len);
     }
+    return std::string(buf);
   }
+}
+
+
+std::string UE_FNameEntry::WideStringToUTF8(const wchar_t* wideString)
+{
+  if (wideString == nullptr)
+    return "";
+
+  // 获取转换后的字符串长度（包括终止null字符）
+  int utf8Length = WideCharToMultiByte(CP_UTF8, 0, wideString, -1, nullptr, 0, nullptr, nullptr);
+
+  if (utf8Length == 0)
+    return "";
+
+  // 分配内存来保存转换后的UTF-8字符串
+  char* utf8Buffer = new char[utf8Length];
+
+  // 进行实际的转换
+  WideCharToMultiByte(CP_UTF8, 0, wideString, -1, utf8Buffer, utf8Length, nullptr, nullptr);
+
+  // 创建std::string并将转换后的UTF-8数据拷贝进去
+  std::string utf8String(utf8Buffer);
+
+  // 释放内存
+  delete[] utf8Buffer;
+
+  return utf8String;
+}
+
+void UE_FNameEntry::String(char* buf, bool wide, uint16 len) const {
+  std::string tmp = String(wide, len);
+  strcpy_s(buf, 1024, tmp.c_str());
 }
 
 std::string UE_FNameEntry::String() const {
