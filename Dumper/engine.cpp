@@ -416,7 +416,7 @@ struct {
     uint16 ElementSize = 0x3C;
     uint16 PropertyFlags = 0x40;
     uint16 Offset = 0x4C;
-    uint16 Size = 0x70;
+    uint16 Size = 0x78;
   } FProperty;
   struct {
     uint16 ArrayDim = 0x38;
@@ -571,7 +571,7 @@ std::unordered_map<std::string, decltype(&engines[0])> games = {
   {"SquadGame", &engines[13]},
   {"Calabiyau-Win64-Shipping", &engines[14]},
   {"Seria", &engines[14]},
-  {"Game", &engines[0]}
+  {"Game", &engines[14]}
 };
 
 STATUS EngineInit(std::string game, void* image) {

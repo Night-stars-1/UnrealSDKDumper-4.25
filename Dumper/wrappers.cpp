@@ -988,7 +988,7 @@ std::string UE_FEnumProperty::GetTypeStr() const {
 }
 
 UE_UClass UE_FClassProperty::GetMetaClass() const {
-  return Read<UE_UClass>(object + offsets.FProperty.Size + 8);
+  return Read<UE_UClass>(object + offsets.FProperty.Size);
 }
 
 std::string UE_FClassProperty::GetTypeStr() const {
