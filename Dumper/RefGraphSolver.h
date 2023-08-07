@@ -615,8 +615,9 @@ public:
       printf("\nReference graph builded! \n");
     }
 
-    // 处理类内的依赖关系
 
+    // 处理类内的依赖关系
+    fmt::print("Fixing package type order... \n");
     for (UE_UPackage& package : packages) {
       FixPackageTypeOrder(package);
     }

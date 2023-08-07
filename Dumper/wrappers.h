@@ -604,6 +604,7 @@ private:
     std::string Params;
     std::string Flags;
     std::string GeneratedParamName;
+    std::string declareConst;
     uint64 Func = 0;
     bool badDeclareFunc = false;
   };

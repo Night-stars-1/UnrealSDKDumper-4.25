@@ -1486,6 +1486,18 @@ void UE_UPackage::GenerateStruct(UE_UStruct object, std::vector<Struct>& arr, bo
       }
     }
   }
+  // 如果是USkeletalMeshComponent，则注入GetBoneWorldPos声明
+  if (s.ClassName == "USkeletalMeshComponent") {
+    Function GetBoneWorldPos_fn;
+    GetBoneWorldPos_fn.CppName = "FVector GetBoneWorldPos";
+    GetBoneWorldPos_fn.FuncName = "GetBoneWorldPos";
+    GetBoneWorldPos_fn.Params = "const int32_t& boneId";
+    GetBoneWorldPos_fn.RetType = "FVector";
+    GetBoneWorldPos_fn.FullName = "Dumper_Generated_Function";
+    GetBoneWorldPos_fn.Func = Base;
+    GetBoneWorldPos_fn.declareConst = " const";
+    s.Functions.push_back(GetBoneWorldPos_fn);
+  }
   // 生成StaticClass方法
   {
     Function static_class_fn;
@@ -1678,7 +1690,7 @@ void UE_UPackage::SaveStruct(std::vector<Struct> &arr, FILE *file) {
     if (s.Functions.size()) {
       fwrite("\n", 1, 1, file);
       for (auto &f : s.Functions) {
-        fmt::print(file, "\n\t{}({}); // {} // ({}) // @ game+{:#08x}", f.CppName, f.Params, f.FullName, f.Flags, f.Func - Base);
+        fmt::print(file, "\n\t{}({}){}; // {} // ({}) // @ game+{:#08x}", f.CppName, f.Params, f.declareConst, f.FullName, f.Flags, f.Func - Base);
       }
     }
     fmt::print(file, "\n}};\n\n");
@@ -1699,7 +1711,7 @@ void UE_UPackage::SaveStructSpacing(std::vector<Struct> &arr, FILE *file) {
     if (s.Functions.size()) {
       fwrite("\n", 1, 1, file);
       for (auto &f : s.Functions) {
-        fmt::print(file, "\n\t{:130} // {} // ({}) // @ game+{:#08x}", fmt::format("{}({});", f.CppName, f.Params), f.FullName, f.Flags, f.Func - Base);
+        fmt::print(file, "\n\t{:130} // {} // ({}) // @ game+{:#08x}", fmt::format("{}({}){};", f.CppName, f.Params, f.declareConst), f.FullName, f.Flags, f.Func - Base);
       }
     }
 
@@ -1812,7 +1824,27 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
     fmt::print(file, "\t * \tFlags: {}\n", flags);
     fmt::print(file, "\t */\n");
   };
-  auto GenerateStaticClass = [&GenerateFunctionHeader](FILE* file, Struct& stru) {
+  auto InjectGetBoneWorldPos = [](FILE* file, Struct& stru) {
+    std::string codeTemplate;
+    auto replaceSubstr = [](std::string& originalStr, std::string substring, std::string replacement) {
+      size_t pos = 0;
+      const size_t substringLength = substring.length();
+      const size_t replacementLength = replacement.length();
+
+      while ((pos = originalStr.find(substring, pos)) != std::string::npos) {
+        originalStr.replace(pos, substringLength, replacement);
+        pos += replacementLength; // Move past the replaced substring
+      }
+    };
+    if (!EngineHeaderExport::LoadResourceText(codeTemplate, INJECTED_GETBONEWORLDPOS)) return;
+    replaceSubstr(codeTemplate, "\r\n", "\n");
+    fmt::print(file, "\n{}\n", codeTemplate);
+  };
+  auto GenerateStaticClass = [&GenerateFunctionHeader, &InjectGetBoneWorldPos](FILE* file, Struct& stru) {
+    if (stru.ClassName == "USkinnedMeshComponent") {
+      // inject GetBoneWorldPos function
+      InjectGetBoneWorldPos(file, stru);
+    }
     FunctionHeader header;
     header.RVA = 0;
     header.name = fmt::format("PredefinedFunction {}.StaticClass", GetValidClassName(stru.ClassName));
@@ -1888,7 +1920,7 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
   };
   auto GenerateProxyFunctionBody = [&GenerateFunctionHeader](FILE* file, Function& func, Struct& stru) {
     // 生成函数体
-    if (func.FuncName == "StaticClass") return;
+    if (func.FullName == "Dumper_Generated_Function") return;
     FunctionHeader header;
     header.RVA = func.Func - Base;
     header.name = ProcessUTF8Char(func.FullName);

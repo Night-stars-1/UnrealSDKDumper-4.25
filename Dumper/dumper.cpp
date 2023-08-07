@@ -243,6 +243,8 @@ STATUS Dumper::Dump() {
       // 再解决依赖关系问题
       RefGraphSolver::Process(processedPackage);
 
+      fmt::print("Writing sdk files... \n");
+
       // 再导出sdk
       for (UE_UPackage& package : processedPackage) {
         if (package.Save(path, Spacing)) {

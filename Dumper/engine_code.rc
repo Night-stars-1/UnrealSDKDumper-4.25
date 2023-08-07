@@ -21,3 +21,7 @@ BASICTYPES_CPP TEXTFILE "engine_code\\BasicTypes_Package.cpp"
 COREUOBJECT_PARAM TEXTFILE "engine_code\\CoreUObject_Params.h"
 
 GLOBAL_OFFSET TEXTFILE "engine_code\\GlobalOffset.h"
+
+INJECTED_GETBONEWORLDPOS TEXTFILE "engine_code\\Injected_GetBoneWorldPos.cpp"
+
+

@@ -16,13 +16,9 @@
 
 class EngineHeaderExport
 {
-  static bool LoadResourceText(std::string& str, int resourceID);
-
-  
-
-
 public:
   static void ReplaceVAR(std::string& str);
+  static bool LoadResourceText(std::string& str, int resourceID);
   static inline void Process(std::filesystem::path dir) {
     const static std::vector<std::pair<int, std::string>> EngineFiles = {
       std::make_pair(BASICTYPES_PACKAGE, "SDK/BasicTypes_Package.h"),
