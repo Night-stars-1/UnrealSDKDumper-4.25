@@ -18,6 +18,7 @@
  - Calabiyau(卡拉彼丘)
  - Seria(晶核：魔导觉醒)
  - Game(尘白禁区)
+ - Client-Win64-Shipping(鸣潮)
 ### 支持引擎版本: 
 - UE 4.23-4.27
 

@@ -72,6 +72,7 @@
       <CallingConvention>FastCall</CallingConvention>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,7 +112,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\fmt\format.cc" />
     <ClCompile Include="ClassSizeFixer.cpp" />
     <ClCompile Include="dumper.cpp" />
     <ClCompile Include="engine.cpp" />
