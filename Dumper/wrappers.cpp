@@ -1976,7 +1976,7 @@ void UE_UPackage::SavePackageCpp(FILE* cppFile, FILE* paramFile) {
 		// 生成函数体
 		if (func.FullName == "Dumper_Generated_Function") return;
 		FunctionHeader header;
-		header.RVA = func.Func - Base;
+		header.RVA = static_cast<uint32>(func.Func - Base);
 		header.name = ProcessUTF8Char(func.FullName);
 		GetFlagOutVector(func.FuncFlag, header.flags);
 		GenerateFunctionHeader(file, header);
