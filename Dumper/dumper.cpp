@@ -19,7 +19,7 @@ STATUS Dumper::Init(int argc, char* argv[]) {
 		uint16 arg16 = *(uint16*)arg;
 		if (arg16 == 'h-') {
 			printf("'-p' - dump only names and objects\n'-w' - wait for input (it gives me time to inject mods)\n'-f packageNameHere' - specifies package where we should look for pointers in paddings (can take a lot of time)\n");
-			fmt::print("-pch 启用pch预编译头，将在生成的package.cpp内包含pch.h");
+			fmt::print("-pch enable precompiled headers include pch.h");
 			return STATUS::FAILED;
 		}
 		else if (arg16 == 'p-') {

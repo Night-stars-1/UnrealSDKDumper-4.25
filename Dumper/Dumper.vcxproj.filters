@@ -47,6 +47,9 @@
     <ClCompile Include="ClassSizeFixer.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\include\fmt\format.cc">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">

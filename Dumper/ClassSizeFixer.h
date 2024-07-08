@@ -43,10 +43,12 @@ public:
     auto& objects = package.Package->second;
     for (auto& object : objects) {
       if (object.IsA<UE_UClass>()) {
-        LoadStruct(object.Cast<UE_UStruct>());
+        auto structData = object.Cast<UE_UStruct>();
+        LoadStruct(structData);
       }
       else if (object.IsA<UE_UScriptStruct>()) {
-        LoadStruct(object.Cast<UE_UStruct>());
+        auto structData = object.Cast<UE_UStruct>();
+        LoadStruct(structData);
       }
     }
   }
@@ -57,10 +59,12 @@ public:
       auto& objects = package.Package->second;
       for (auto& object : objects) {
         if (object.IsA<UE_UClass>()) {
-          totFixed += FixStruct(object.Cast<UE_UStruct>());
+          auto structData = object.Cast<UE_UStruct>();
+          totFixed += FixStruct(structData);
         }
         else if (object.IsA<UE_UScriptStruct>()) {
-          totFixed += FixStruct(object.Cast<UE_UStruct>());
+          auto structData = object.Cast<UE_UStruct>();
+          totFixed += FixStruct(structData);
         }
       }
     }
